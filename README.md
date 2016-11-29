@@ -11,6 +11,8 @@ Advanced features (but it would be nice to implement them):
 --------------
 - HTTPS with proper certificate (use Let's Encrypt)
 - limiting amount of comments per page
+- modifying comments (use Ajax)
+- deleting comments (use Ajax)
 - detecting duplicate bookings
 - user authentication
 - password protection (hashing with salt)
@@ -18,4 +20,4 @@ Advanced features (but it would be nice to implement them):
 - modifying bookings (use Ajax)
 - deleting bookings (use Ajax)
 - different costs of bookings depending on variables
-- 
+- possibly more
