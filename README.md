@@ -4,9 +4,18 @@ Design and implement a website using Python Flask framework
 Core features:
 --------------
 - each page must be rendered as a template in Flask
-- comments functionality must be done on server-side
-- booking facility for property
+- comments functionality must be done on server-side (saved as lists; use CSV format I guess)
+- booking facility for property (saved as lists; use CSV format I guess)
 
-Advanced features:
+Advanced features (but it would be nice to implement them):
 --------------
-- TBD (finish core ones first)
+- HTTPS with proper certificate (use Let's Encrypt)
+- limiting amount of comments per page
+- detecting duplicate bookings
+- user authentication
+- password protection (hashing with salt)
+- admin level authentication and admin panel
+- modifying bookings (use Ajax)
+- deleting bookings (use Ajax)
+- different costs of bookings depending on variables
+- 
