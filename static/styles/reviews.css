@@ -16,6 +16,9 @@ input#nameBox
 	font-family: Arial;
 	width: 30em;
 }
+input#hiddenRating
+{
+}
 textarea#commentBox
 {
 	font-family: Arial;
