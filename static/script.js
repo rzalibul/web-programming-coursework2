@@ -1,20 +1,20 @@
 "use strict";
 // utility functions for local storage with use of JSON
-function setObject(key, value) 
-{
-	window.localStorage.setItem(key, JSON.stringify(value));
-};
-function getObject(key) 
-{
-	var storage = window.localStorage;
-	var value = storage.getItem(key);
-	return value && JSON.parse(value);
-};
-function clearStorage() 
-{
-	// removes everything placed in localstorage
-	window.localStorage.clear();
-};
+// function setObject(key, value) 
+// {
+	// window.localStorage.setItem(key, JSON.stringify(value));
+// };
+// function getObject(key) 
+// {
+	// var storage = window.localStorage;
+	// var value = storage.getItem(key);
+	// return value && JSON.parse(value);
+// };
+// function clearStorage() 
+// {
+	// // removes everything placed in localstorage
+	// window.localStorage.clear();
+// };
 
 // escape HTML characters function
 // source: http://stackoverflow.com/questions/24816/escaping-html-strings-with-jquery
@@ -43,36 +43,59 @@ function escapeHtml(string)
 /* review page functionality */
 function saveComment()
 {
-	var cText = escapeHtml($('#commentBox').val());			// escape certain characters to prevent XSS injection
-	var cName = $('#nameBox').val();
-	if (cName === "")
-		cName = "Anonymous";
-	else
-		cName = escapeHtml(cName);							// if it's not an empty string, escape certain characters
+	// client-side code (redundant; for now leave it here)
+	// var cText = escapeHtml($('#commentBox').val());			// escape certain characters to prevent XSS injection
+	// var cName = $('#nameBox').val();
+	// if (cName === "")
+		// cName = "Anonymous";
+	// else
+		// cName = escapeHtml(cName);							// if it's not an empty string, escape certain characters
 		
-	var prevComments = $('#commentList').html() == '<span class="cmtName">No comments</span>' ? "" : $('#commentList').html();
-	var prevLinks = $('#sideNav').html();
-	// if there are no comments loaded, 'No comments' span element is present and in order to remove it, it needs to be checked
-	// if it is present, assign empty string, otherwise proceed normally
-	/*
-		equivalent to:
-		var prevComments;
-		if($('#commentList').html() == '<span class="cmtName">No comments</span>')
-			prevComments = "";
-		else
-			prevComments = $('#commentList').html();
-	*/
-	if ($('.stars.starSelected').length)
-		var curRating = "<div class='rating'>" + $('div#commentArea > div.rating').html().split('stars').join('') + "</div>";
-		// find the div.rating that is in the comment area, take the string and remove the stars class from the string
-		// to do: something more sophisticated to remove 'class' from the string if there is none 
-	else
-		var curRating = "<p>No rating</p>";
-	var curComment = '<span class="cmtName">' + cName + ' says:' + '</span><p class="comment">' + cText + '</p>' + 'Rating:' + curRating + '<span class="date">' + Date() + '</span><br />' + prevComments;
-	$('#commentList').empty();
-	$('#commentList').append(curComment);
-	$('.stars.starSelected').removeClass('starSelected');			// clear the remembered rating from the commenting area
-	setObject('comments', $('#commentList').html());
+	// var prevComments = $('#commentList').html() == '<span class="cmtName">No comments</span>' ? "" : $('#commentList').html();
+	// var prevLinks = $('#sideNav').html();
+	// // if there are no comments loaded, 'No comments' span element is present and in order to remove it, it needs to be checked
+	// // if it is present, assign empty string, otherwise proceed normally
+	// /*
+		// equivalent to:
+		// var prevComments;
+		// if($('#commentList').html() == '<span class="cmtName">No comments</span>')
+			// prevComments = "";
+		// else
+			// prevComments = $('#commentList').html();
+	// */
+	// if ($('.stars.starSelected').length)
+		// var curRating = "<div class='rating'>" + $('div#commentArea > div.rating').html().split('stars').join('') + "</div>";
+		// // find the div.rating that is in the comment area, take the string and remove the stars class from the string
+		// // to do: something more sophisticated to remove 'class' from the string if there is none 
+	// else
+		// var curRating = "<p>No rating</p>";
+	// var curComment = '<span class="cmtName">' + cName + ' says:' + '</span><p class="comment">' + cText + '</p>' + 'Rating:' + curRating + '<span class="date">' + Date() + '</span><br />' + prevComments;
+	// $('#commentList').empty();
+	// $('#commentList').append(curComment);
+	// $('.stars.starSelected').removeClass('starSelected');			// clear the remembered rating from the commenting area
+	// setObject('comments', $('#commentList').html());
+	
+	var cText = $('#commentBox').val();
+	var cName = $('#nameBox').val();
+	var rating = 5 - $('span.stars.starSelected').index();				// nodes are in inverted order
+	$('input#hiddenRating').val(rating);								// wrap the rating in an input element to push through HTTP request
+	
+	$.ajax
+	(
+		{
+			url: '/saveComment',
+			data: $('form#reviewForm').serialize(),
+			type: 'POST',
+			success: function(response)
+			{
+				console.log(response);
+			},
+			error: function(response)
+			{
+				console.log(response);
+			}
+		}
+	);
 }
 
 function clearComment()
@@ -85,11 +108,11 @@ function clearComment()
 
 function fetchComments()
 {
-	var inList = getObject('comments');
-	if (inList == null)
-		inList = '<span class="cmtName">No comments</span>';
-	$('#commentList').empty();
-	$('#commentList').append(inList);
+	// var inList = getObject('comments');
+	// if (inList == null)
+		// inList = '<span class="cmtName">No comments</span>';
+	// $('#commentList').empty();
+	// $('#commentList').append(inList);
 }
 
 $('span.stars').click				// selects a particular rating on click
