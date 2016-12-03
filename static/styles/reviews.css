@@ -20,8 +20,7 @@ form#reviewForm
 input#nameBox
 {
 	font-family: Arial;
-	width: 60vw;
-	
+	width: 30em;
 }
 input#hiddenRating
 {
