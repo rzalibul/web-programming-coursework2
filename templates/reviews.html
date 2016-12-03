@@ -18,7 +18,7 @@
 			</div>
 			<div id="main">
 				<div id="sideNav">
-					<a class="sideNavLink" onClick="saveComment()">Save comment</a>
+					<a class="sideNavLink" form="reviewForm" onClick="saveComment()">Save comment</a>
 					<a class="sideNavLink" onClick="clearComment()">Clear comment</a>
 				</div>
 				<div id="contentWrap">
@@ -34,17 +34,20 @@
 							-->
 						</div>
 						<div id="commentArea">
-							<h2>Your review or comment</h2>
-							Your name: <input id="nameBox" type="text" maxlength="32" size="20" placeholder="Enter your name..." /><br />
-							Your comment: <textarea id="commentBox" placeholder="Enter your comment..."></textarea>
-							Your rating (if applicable): 
-							<div class="rating">
-								<span class="stars">&#9734;</span>
-								<span class="stars">&#9734;</span>
-								<span class="stars">&#9734;</span>
-								<span class="stars">&#9734;</span>
-								<span class="stars">&#9734;</span>
-							</div>
+							<form id="reviewForm" action="/saveComment" method="post" role="form">
+								<h2>Your review or comment</h2>
+								Your name: <input id="nameBox" name="author" type="text" maxlength="32" size="20" placeholder="Enter your name..." /><br />
+								Your comment: <textarea id="commentBox" name="comment" placeholder="Enter your comment..."></textarea>
+								Your rating (if applicable): 
+								<div class="rating">
+									<span class="stars">&#9734;</span>
+									<span class="stars">&#9734;</span>
+									<span class="stars">&#9734;</span>
+									<span class="stars">&#9734;</span>
+									<span class="stars">&#9734;</span>
+								</div>
+								<input id="hiddenRating" name="rating" type="number" hidden />
+							</form>
 						</div>
 					</div>
 				</div>
