@@ -5,12 +5,17 @@ import json
 from datetime import datetime
 
 # reads a csv file in specified path, map field names and return list of JSON formatted rows
-def readCsvFileToJSON(filePath, fieldNames):
+# filePath: specify relative path from this file
+# fieldnames: specify field names in form of a list
+def readCsvFileToJSON(filePath, fieldnames):
 	with open(filePath, 'r') as inFile:
 		list = []
-		reader = csv.DictReader(inFile, fieldnames = fieldNames)		# map the field names
+		reader = csv.DictReader(inFile, fieldnames = fieldnames)		# map the field names
 		for row in reader:
-			list.append(json.JSONEncoder().encode({fieldNames[0]: row[fieldNames[0]], fieldNames[1]: row[fieldNames[1]], fieldNames[2]: row[fieldNames[2]], fieldNames[3]: row[fieldNames[3]]}))
+			sublist = []
+			for field in row:
+				sublist.append(json.JSONEncoder().encode({field: row[field]}))
+			list.append(sublist)
 	return list
 # writes specified list to a csv file in specified path
 def writeCsvFile(list, filePath):
@@ -66,6 +71,7 @@ def fetchComments():
 	commentsPath = "static\\comments.csv"
 	# file format: author, text, rating, date
 	fieldNames = ['author', 'comment', 'rating', 'date']
+	# dump list of JSON formatted data
 	list = readCsvFileToJSON(commentsPath, fieldNames)
 	return json.dumps(list)
 	
