@@ -143,14 +143,14 @@ function fetchComments()
 					cmtList,
 					function(key, val)
 					{
-						cmtList[key].rating = -1*(parseInt(cmtList.rating) - 5);				// revert the node index back
+						val.rating = -1*(parseInt(val.rating) - 5);				// revert the node index back
 						curRating = '<div class=rating><span class="starSelected">&#9734;</span><span class="starSelected">&#9734;</span><span class="starSelected">&#9734;</span><span class="starSelected">&#9734;</span><span class="starSelected">&#9734;</span></div>';
 						// remove the star selection until the rating is adjusted properly
-						for (var i = 0; i < cmtList.rating; i++)
+						for (var i = 0; i < val.rating; i++)
 						{
 							curRating = curRating.replace('class="starSelected"', '');
 						}
-						comments += '<span class="cmtName">' + cmtList[key].author + ' says:' + '</span><p class="comment">' + cmtList[key].comment + '</p>' + 'Rating:' + curRating + '<span class="date">' + cmtList[key].date + '</span><br />';
+						comments += '<span class="cmtName">' + val.author + ' says:' + '</span><p class="comment">' + val.comment + '</p>' + 'Rating:' + curRating + '<span class="date">' + val.date + '</span><br />';
 					}
 				);
 				$('#commentList').append(comments);
