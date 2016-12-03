@@ -101,7 +101,7 @@ function saveComment()
 				}
 				var prevComments = $('#commentList').html();
 				var curComment = '<span class="cmtName">' + cmtList.author + ' says:' + '</span><p class="comment">' + cmtList.comment + '</p>' + 'Rating:' + curRating + '<span class="date">' + cmtList.date + '</span><br />' + prevComments;
-				$('#commentList').append('');
+				$('#commentList').empty();
 				$('#commentList').append(curComment);
 			},
 			error: function(response)
@@ -121,11 +121,6 @@ function clearComment()
 
 function fetchComments()
 {
-	// var inList = getObject('comments');
-	// if (inList == null)
-		// inList = '<span class="cmtName">No comments</span>';
-	// $('#commentList').empty();
-	// $('#commentList').append(inList);
 	$.getJSON
 	(
 		"/fetchComments",
