@@ -77,8 +77,9 @@ function saveComment()
 	
 	var cText = $('#commentBox').val();
 	var cName = $('#nameBox').val();
-	var rating = 5 - $('span.stars.starSelected').index();				// nodes are in inverted order
+	var rating = 5 - $('span.stars.starSelected').index();				// nodes are in inverted order (check reviews.css if required)
 	$('input#hiddenRating').val(rating);								// wrap the rating in an input element to push through HTTP request
+	// potential bug: rating may be undefined when none was selected
 	
 	$.ajax
 	(
@@ -88,7 +89,21 @@ function saveComment()
 			type: 'POST',
 			success: function(response)
 			{
-				console.log(response);
+				//console.log(response);
+				// parse the response into proper fields
+				var list = JSON.parse(response);
+				// format it into proper HTML
+				list.rating = -1*(parseInt(list.rating) - 5);				// revert the node index back
+				var curRating = '<div class=rating><span class="starSelected">&#9734;</span><span class="starSelected">&#9734;</span><span class="starSelected">&#9734;</span><span class="starSelected">&#9734;</span><span class="starSelected">&#9734;</span></div>';
+				// remove the star selection until the rating is adjusted properly
+				for (var i = 0; i < list.rating; i++)
+				{
+					curRating = curRating.replace('class="starSelected"', '');
+				}
+				var prevComments = $('#commentList').html() == '<span class="cmtName">No comments</span>' ? "" : $('#commentList').html();
+				var curComment = '<span class="cmtName">' + list.author + ' says:' + '</span><p class="comment">' + list.comment + '</p>' + 'Rating:' + curRating + '<span class="date">' + list.date + '</span><br />' + prevComments;
+				$('#commentList').append('');
+				$('#commentList').append(curComment);
 			},
 			error: function(response)
 			{
