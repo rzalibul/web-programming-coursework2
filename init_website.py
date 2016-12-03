@@ -4,19 +4,26 @@ import csv
 import json
 from datetime import datetime
 
+# simple CSV reading
+def readCsvFile(filePath):
+	with open(filePath, 'r') as inFile:
+		reader = csv.reader(inFile)
+		aList = [row for row in reader]
+	return aList
 # reads a csv file in specified path, map field names and return list of JSON formatted rows
 # filePath: specify relative path from this file
 # fieldnames: specify field names in form of a list
-def readCsvFileToJSON(filePath, fieldnames):
+def readCsvFileToJSON(filePath, fieldnames, wrappingword='item'):
 	with open(filePath, 'r') as inFile:
 		list = []
+		counter = 1
 		reader = csv.DictReader(inFile, fieldnames = fieldnames)		# map the field names
 		for row in reader:
-			sublist = []
+			sublist = {}
 			for field in row:
-				sublist.append(json.JSONEncoder().encode({field: row[field]}))
+				sublist.update({field: row[field]})
 			list.append(sublist)
-	return list
+	return json.JSONEncoder().encode({wrappingword: list})
 # writes specified list to a csv file in specified path
 def writeCsvFile(list, filePath):
 	with open(filePath, 'w', newline='') as outFile:
