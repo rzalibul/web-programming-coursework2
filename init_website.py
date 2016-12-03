@@ -1,6 +1,7 @@
 from flask import Flask, render_template
 from flask import request
 import csv
+import json
 
 # reads a csv file in specified path
 def readCsvFile(filePath):
@@ -38,6 +39,15 @@ def contactus():
 @app.route('/gallery')
 def gallery():
 	return render_template('gallery.html')
+
+@app.route('/saveComment', methods=['POST'])
+def saveComment():
+	name = request.form['author']
+	comment = request.form['comment']
+	rating = int(request.form['rating'])
+	
+	# dump data sent in JSON format for test purposes
+	return json.dumps({'status': 'OK', 'author': name, 'comment': comment, 'rating': rating})
 
 if __name__ == '__main__':
 	app.run(debug = True)
