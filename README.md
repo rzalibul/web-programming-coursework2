@@ -4,7 +4,7 @@ Design and implement a website using Python Flask framework
 Core features:
 --------------
 - each page must be rendered as a template in Flask (done!)
-- comments functionality must be done on server-side (saved as lists; use CSV format I guess)
+- comments functionality must be done on server-side (saved as lists; use CSV format I guess) - work in progress, Ajax communication in place
 - booking facility for property (saved as lists; use CSV format I guess)
 
 Advanced features (but it would be nice to implement them):
