@@ -1,0 +1,68 @@
+/* review/comment page specific */
+div#commentWrap
+{
+	
+}
+div#commentList
+{
+	
+}
+div#commentArea
+{
+	
+}
+input#nameBox
+{
+	font-family: Arial;
+	width: 30em;
+}
+textarea#commentBox
+{
+	font-family: Arial;
+	resize: none;
+	width: 60vw;
+	max-width: 60vw;
+	min-height: 10vh;
+}
+/* rating styling; source: https://css-tricks.com/star-ratings/ */
+div.rating
+{
+	flex-direction: row;
+	align-items: flex-end;
+	justify-content: flex-end;
+	font-size: xx-large;
+	unicode-bidi: bidi-override;		/* prevent charset override from the user */
+	direction: rtl;
+	/* stars have to be displayed right to left in order to have them selected (no reverse order selection in CSS) */
+	cursor: pointer;
+	
+	-webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    -ms-user-select: none;
+}
+/* select a span element that is either hovered and is of class 'stars' or has id = 'starSelected' AND all span elements that are before AND are the children of div.rating */
+div.rating > span.stars:hover:before,
+div.rating > span.stars:hover ~ span:before,
+div.rating > span.starSelected:before,
+div.rating > span.starSelected ~ span:before
+{
+   content: "\2605";
+   position: absolute;
+   /* change the star from the hollow one to filled one on hover */
+}
+
+p.comment
+{
+	font-style: italic;
+	margin-top: 3vh;
+}
+span.cmtName
+{
+	margin-top: 2vh;
+}
+span.date
+{
+	margin-top: 2vh;
+}

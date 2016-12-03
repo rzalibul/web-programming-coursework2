@@ -1,0 +1,167 @@
+body
+{
+	/* resetting browser default properties */
+	margin: 0;
+	padding: 0;
+}
+
+div
+{
+	/* remove comment indicators below to see the layout */
+	/* border: 1px black solid;*/
+	/* preperaing flexbox */
+	/* all code regarding flexbox based on: https://css-tricks.com/snippets/css/a-guide-to-flexbox/ */
+	/* display: -webkit-flex; */
+    /* display: -webkit-box; */
+    /* display: -moz-flex; */
+    /* display: -moz-box; */
+    /* display: -ms-flexbox; */
+	/* prefixes are available but on most browsers that need them (so deprecated versions), there are a lot of bugs (i.e. Safari 5.1.7) */
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+
+div#wrap
+{
+	/* setting defaults for the document */
+	height: auto;
+	margin: auto 0 auto 0;
+	padding: 1vh 3.5vw 1vh 3.5vw;
+	/* setting default font */
+	font-family: Arial;
+	font-size: small;
+	background-color: #ffffff;
+	color: #000000;
+	position: relative;
+}
+/* div#header */
+/* { */
+	/* width: 80vw; */
+	/* height: 10vh; */
+	/* margin: auto; */
+	/* margin-bottom: 2vh; */
+/* } */
+div#mainNav
+{
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: flex-end;
+	align-items: stretch;
+	width: 75vw;
+	height: auto;
+	margin: auto 10vw auto 15vw;
+}
+
+a
+{
+	text-decoration: none;
+}
+
+a.mainNavLink
+{
+	height: 5vh;
+	line-height: 5vh;
+	/* center vertically */
+	flex-grow: 1;
+	font-size: medium;
+	margin: auto;	/* center all elements */
+	text-align: center; /* center text */
+	background-color: #000000;
+	color: #ffffff;
+	padding-left: 1vw;
+	padding-right: 1vw;
+}
+
+a.mainNavLink:hover
+{
+	background-color: #ffffff;
+	color: #000000;
+}
+
+div#main
+{
+	position: relative;
+	flex-direction: row;
+	justify-content: center;
+	flex-grow: 3;
+	margin-top: 2vh;
+	width: 75vw;
+	min-height: 80vh;	/* make sure all content will be displayed, especially the footer */
+	margin-left: -5vw;
+	padding-left: 20vw;
+	z-index: 4;
+}
+
+div#sideNav
+{
+	width: 15vw;
+	margin: 1vh 0 1vh -3vw;
+	position: fixed;
+	left: 3.5vw;
+	top: 7vh;
+}
+
+a.sideNavLink
+{
+	flex-basis: 5vh;
+	line-height: 5vh;
+	font-size: medium;%%%
+	padding-top: 2vh;
+	padding-bottom: 2vh;
+	text-align: center;
+	background-color: #000000;
+	color: #ffffff;
+	padding-left: 3vw;
+	padding-right: 3vw;
+}
+
+a.sideNavLink:hover
+{
+	background-color: #ffffff;
+	color: #000000;
+}
+
+div#contentWrap
+{
+	width: inherit;			/* IE fix; apparently it does not inherit values from the parent node */
+	position: relative;
+	margin: 1vh 1vw 1vh 1vw;
+	flex-direction: column;
+	justify-content: flex-start;
+	text-align: justify;
+	margin-bottom: 1vh;
+	font-size: medium;
+}
+img.introImg
+{
+	margin: auto;
+	width: 20vw;
+	max-width: 50vw;
+}
+h2
+{
+	margin: 4vh 0 4vh 0;
+	text-align: center;
+}
+
+p.intro
+{
+	margin-top: 2vh;
+	flex-grow: 0.1;
+}
+
+p.mainText
+{
+	flex-grow: 1;
+}
+
+div#footer
+{
+	height: auto;
+	margin-left: 15vw;
+	margin-top: 2vh;
+	margin-bottom: auto;
+	flex-grow: 0.1;
+	text-align: center;
+}
