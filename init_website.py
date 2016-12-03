@@ -4,11 +4,13 @@ import csv
 import json
 from datetime import datetime
 
-# reads a csv file in specified path
-def readCsvFile(filePath):
+# reads a csv file in specified path, map field names and return list of JSON formatted rows
+def readCsvFileToJSON(filePath, fieldNames):
 	with open(filePath, 'r') as inFile:
-		reader = csv.reader(inFile)
-		list = [row for row in reader]
+		list = []
+		reader = csv.DictReader(inFile, fieldnames = fieldNames)		# map the field names
+		for row in reader:
+			list.append(json.JSONEncoder().encode({fieldNames[0]: row[fieldNames[0]], fieldNames[1]: row[fieldNames[1]], fieldNames[2]: row[fieldNames[2]], fieldNames[3]: row[fieldNames[3]]}))
 	return list
 # writes specified list to a csv file in specified path
 def writeCsvFile(list, filePath):
@@ -56,8 +58,17 @@ def saveComment():
 	newEntry = [name, comment, rating, date]
 	list.append(newEntry)
 	writeCsvFile(list, commentsPath)
-	# dump data sent in JSON format for test purposes
+	# dump data sent in JSON format
 	return json.dumps({'status': 'OK', 'author': name, 'comment': comment, 'rating': rating, 'date': date})
 
+@app.route('/fetchComments', methods=['GET'])
+def fetchComments():
+	commentsPath = "static\\comments.csv"
+	# file format: author, text, rating, date
+	fieldNames = ['author', 'comment', 'rating', 'date']
+	list = readCsvFileToJSON(commentsPath, fieldNames)
+	return json.dumps(list)
+	
+	
 if __name__ == '__main__':
 	app.run(debug = True)
