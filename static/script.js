@@ -89,19 +89,18 @@ function saveComment()
 			type: 'POST',
 			success: function(response)
 			{
-				//console.log(response);
-				// parse the response into proper fields
-				var list = JSON.parse(response);
+				// parse the response into proper fields (author, comment, rating, date)
+				var cmtList = JSON.parse(response);
 				// format it into proper HTML
-				list.rating = -1*(parseInt(list.rating) - 5);				// revert the node index back
+				cmtList.rating = -1*(parseInt(cmtList.rating) - 5);				// revert the node index back
 				var curRating = '<div class=rating><span class="starSelected">&#9734;</span><span class="starSelected">&#9734;</span><span class="starSelected">&#9734;</span><span class="starSelected">&#9734;</span><span class="starSelected">&#9734;</span></div>';
 				// remove the star selection until the rating is adjusted properly
-				for (var i = 0; i < list.rating; i++)
+				for (var i = 0; i < cmtList.rating; i++)
 				{
 					curRating = curRating.replace('class="starSelected"', '');
 				}
-				var prevComments = $('#commentList').html() == '<span class="cmtName">No comments</span>' ? "" : $('#commentList').html();
-				var curComment = '<span class="cmtName">' + list.author + ' says:' + '</span><p class="comment">' + list.comment + '</p>' + 'Rating:' + curRating + '<span class="date">' + list.date + '</span><br />' + prevComments;
+				var prevComments = $('#commentList').html();
+				var curComment = '<span class="cmtName">' + cmtList.author + ' says:' + '</span><p class="comment">' + cmtList.comment + '</p>' + 'Rating:' + curRating + '<span class="date">' + cmtList.date + '</span><br />' + prevComments;
 				$('#commentList').append('');
 				$('#commentList').append(curComment);
 			},
@@ -115,10 +114,9 @@ function saveComment()
 
 function clearComment()
 {
-	if($("#commentBox").val() == "CLR STORAGE")
-		clearStorage();
 	$("#nameBox").val("");
 	$("#commentBox").val("");
+	$("#hiddenRating").val("");
 }
 
 function fetchComments()
@@ -128,6 +126,37 @@ function fetchComments()
 		// inList = '<span class="cmtName">No comments</span>';
 	// $('#commentList').empty();
 	// $('#commentList').append(inList);
+	$.getJSON
+	(
+		"/fetchComments",
+		function(data)
+		{
+			if(data != "")							// proceed if JSON request is not empty
+			{
+				console.log(data);
+				var cmtList = JSON.parse(data);
+				cmtList = cmtList.item;
+				var comments = '';
+				var curRating;
+				$.each
+				(
+					cmtList,
+					function(key, val)
+					{
+						cmtList[key].rating = -1*(parseInt(cmtList.rating) - 5);				// revert the node index back
+						curRating = '<div class=rating><span class="starSelected">&#9734;</span><span class="starSelected">&#9734;</span><span class="starSelected">&#9734;</span><span class="starSelected">&#9734;</span><span class="starSelected">&#9734;</span></div>';
+						// remove the star selection until the rating is adjusted properly
+						for (var i = 0; i < cmtList.rating; i++)
+						{
+							curRating = curRating.replace('class="starSelected"', '');
+						}
+						comments += '<span class="cmtName">' + cmtList[key].author + ' says:' + '</span><p class="comment">' + cmtList[key].comment + '</p>' + 'Rating:' + curRating + '<span class="date">' + cmtList[key].date + '</span><br />';
+					}
+				);
+				$('#commentList').append(comments);
+			}
+		}
+	);
 }
 
 $('span.stars').click				// selects a particular rating on click
