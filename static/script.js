@@ -39,6 +39,26 @@ function escapeHtml(string)
 	);
 	// perform a global match for characters in the regular expression and return the corresponding HTML escape character that is mapped in entity map
 }
+/* login/logout requests */
+function logout()
+{
+	$.ajax
+	(
+		{
+			url: '/logout',
+			data: '',
+			type: 'GET',
+			success: function(response)
+			{
+				
+			},
+			error: function(response)
+			{
+				
+			}
+		}
+	);
+}
 
 /* review page functionality */
 function saveComment()
@@ -77,6 +97,7 @@ function saveComment()
 	
 	var cText = $('#commentBox').val();
 	var cName = $('#nameBox').val();
+	// above could be used for client-side validation
 	var rating = 5 - $('span.stars.starSelected').index();				// nodes are in inverted order (check reviews.css if required)
 	$('input#hiddenRating').val(rating);								// wrap the rating in an input element to push through HTTP request
 	// potential bug: rating may be undefined when none was selected
@@ -128,9 +149,9 @@ function fetchComments()
 		{
 			if(data != "")							// proceed if JSON request is not empty
 			{
-				console.log(data);
+				//console.log(data);
 				var cmtList = JSON.parse(data);
-				cmtList = cmtList.item;
+				cmtList = cmtList.item;				// default value for the whole collection (see init_website.py fetchComments subroutine)
 				var comments = '';
 				var curRating;
 				$.each
@@ -140,7 +161,7 @@ function fetchComments()
 					{
 						val.rating = -1*(parseInt(val.rating) - 5);				// revert the node index back
 						curRating = '<div class=rating><span class="starSelected">&#9734;</span><span class="starSelected">&#9734;</span><span class="starSelected">&#9734;</span><span class="starSelected">&#9734;</span><span class="starSelected">&#9734;</span></div>';
-						// remove the star selection until the rating is adjusted properly
+						// remove the star selection until the rating is adjusted to proper value
 						for (var i = 0; i < val.rating; i++)
 						{
 							curRating = curRating.replace('class="starSelected"', '');

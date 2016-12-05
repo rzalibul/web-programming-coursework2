@@ -35,13 +35,19 @@ div#wrap
 	color: #000000;
 	position: relative;
 }
-/* div#header */
-/* { */
-	/* width: 80vw; */
-	/* height: 10vh; */
-	/* margin: auto; */
-	/* margin-bottom: 2vh; */
-/* } */
+div#header
+{
+	width: 80vw;
+	margin: auto;
+	margin-bottom: 2vh;
+}
+form#login
+{
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	height: 20vh;
+}
 div#mainNav
 {
 	flex-direction: row;

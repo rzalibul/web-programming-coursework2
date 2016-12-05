@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, session, redirect
 from flask import request
 import csv
 import json
@@ -10,13 +10,27 @@ def readCsvFile(filePath):
 		reader = csv.reader(inFile)
 		aList = [row for row in reader]
 	return aList
+# find a value in CSV file and return the row; if value is not present, return an empty string
+# filePath: specify relative path from this file
+# fieldnames: specify field names in form of a list
+# field: specify the field for the sought value
+# val: specify sought value
+def findCsvRow(filePath, fieldnames, field, val):
+	with open(filePath, 'r') as inFile:
+		reader = csv.DictReader(inFile, fieldnames = fieldnames)		# map the field names
+		for row in reader:
+			if row[field] == val:
+				return row
+	# no matches found; return empty string
+	# potential error(?); empty list should be returned
+	return ""
 # reads a csv file in specified path, map field names and return list of JSON formatted rows
 # filePath: specify relative path from this file
 # fieldnames: specify field names in form of a list
+# wrappingword: word used to wrap all the items (default: item)
 def readCsvFileToJSON(filePath, fieldnames, wrappingword='item'):
 	with open(filePath, 'r') as inFile:
 		list = []
-		counter = 1
 		reader = csv.DictReader(inFile, fieldnames = fieldnames)		# map the field names
 		for row in reader:
 			sublist = {}
@@ -55,6 +69,7 @@ def contactus():
 def gallery():
 	return render_template('gallery.html')
 
+# review page specific
 @app.route('/saveComment', methods=['POST'])
 def saveComment():
 	commentsPath = "static\\comments.csv"
@@ -81,7 +96,30 @@ def fetchComments():
 	# dump list of JSON formatted data
 	list = readCsvFileToJSON(commentsPath, fieldNames)
 	return json.dumps(list)
-	
+
+@app.route('/register')
+def register():
+	return render_template('register.html')
+
+@app.route('/login', methods=['POST'])
+def login():
+	usersPath = "static\\users.csv"
+	username = request.form['username']
+	password = request.form['pwd']
+	fieldNames = ['username', 'password']
+	record = findCsvRow(usersPath, fieldNames, 'username', username)
+	if record != "":
+		if record['password'] == password:
+			session['username'] = username
+			return redirect('/')
+	return redirect('/')
+
+@app.route('/logout', methods=['GET'])
+def logout():
+	session.clear()
+	return redirect('/')
 	
 if __name__ == '__main__':
+	# pseudo RNG key for sessions
+	app.secret_key = '\x0e\xdd\xbb\x86j2\xff-\xf3\\S[\xc0\x1a$\xa6t\x04\xd3\x87!\x1f\x9a,'
 	app.run(debug = True)
