@@ -14,7 +14,7 @@ Advanced features (but it would be nice to implement them):
 - modifying comments (use Ajax)
 - deleting comments (use Ajax)
 - detecting duplicate bookings
-- user authentication
+- user authentication (work in progress but almost done)
 - password protection (hashing with salt)
 - admin level authentication and admin panel
 - modifying bookings (use Ajax)
