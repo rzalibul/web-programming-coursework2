@@ -4,7 +4,10 @@ body
 	margin: 0;
 	padding: 0;
 }
-
+button
+{
+	width: 5em;
+}
 div
 {
 	/* remove comment indicators below to see the layout */
@@ -37,6 +40,7 @@ div#wrap
 }
 div#header
 {
+	align-items: flex-end;
 	width: 80vw;
 	margin: auto;
 	margin-bottom: 2vh;

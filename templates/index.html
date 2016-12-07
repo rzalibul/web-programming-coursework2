@@ -11,7 +11,7 @@
 			<div id="header">
 				{% if session['username'] %}
 				<span> Hello {{session['username']}} </span>
-				<button type="button" value="Logout" onclick="logout()" />
+				<button type="button" value="Logout" onclick="logout()">Logout</button>
 				{% else %}
 				<form id="login" action="/login" method="post" role="form">
 					Username: <input id="username" name="username" type="text" /><br />

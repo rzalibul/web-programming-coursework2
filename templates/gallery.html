@@ -9,6 +9,18 @@
 	</head>
 	<body>
 		<div id="wrap">
+			<div id="header">
+				{% if session['username'] %}
+				<span> Hello {{session['username']}} </span>
+				<button type="button" value="Logout" onclick="logout()">Logout</button>
+				{% else %}
+				<form id="login" action="/login" method="post" role="form">
+					Username: <input id="username" name="username" type="text" /><br />
+					Password: <input id="pwd" name="pwd" type="password" /><br />
+					<input type="submit" value="Login" /><br />				
+				</form>
+				{% endif %}
+			</div>
 			<div id="mainNav">
 				<a class="mainNavLink" href="index">Main Page</a>
 				<a class="mainNavLink" href="gallery">Gallery</a>
