@@ -24,24 +24,44 @@ def findCsvRow(filePath, fieldnames, field, val):
 	# no matches found; return empty list
 	return []
 
-# replace a row with certain ID value
+# replace a row with certain value in the 0th index; if delete is present, the function will only look at the first mapped field to find the record and then delete it
 # filePath: specify relative path from this file
-# rowReplacement: mapped row of a dictionary that should replace a row with certain ID value
-def replaceCsvRow(filePath, rowReplacement, fieldnames):
+# rowReplacement: mapped row of a dictionary that should replace a row with certain value
+# fieldnames: specify field names in form of a list
+# (optional) delete: specify whether the replace should be delete; set to True to use this mode
+def replaceCsvRow(filePath, rowReplacement, fieldnames, delete=False):
 	aList = readCsvFile(filePath)
 	for index, row in enumerate(aList):
 		# safely cast into int to enforce one type
 		if int(row[0]) == int(rowReplacement[fieldnames[0]]):
-			counter = 0
-			for field in rowReplacement:
-				aList[index][counter] = rowReplacement[fieldnames[counter]]
-				counter += 1
-			# break out of the loop; IDs are unique
-			break
-	print(aList)
+			if delete == True:
+				aList[index] = []
+			else:
+				counter = 0
+				for field in rowReplacement:
+					aList[index][counter] = rowReplacement[fieldnames[counter]]
+					counter += 1
+				# break out of the loop; IDs are unique
+				break
 	writeCsvFile(aList, filePath)
 	return
 
+# delete first encountered csv row that matches the search by search field
+# filePath:	specify relative path from this file
+# fieldnames: specify field names in form of a list
+# searchField: specify a mapped field which contains 
+# def deleteCsvRow(filePath, fieldnames, searchField, val):
+	# list = []
+	# with open(filePath, 'r') as inFile:
+		# reader = csv.DictReader(inFile, fieldnames = fieldnames)
+		# for row in reader:
+			# dict = {}
+			# for field in row:
+				# if field == searchField and row[field] == val:
+					
+				# dict.update({field: row[field]})
+			# list.append(aDict)
+	
 # reads a csv file in specified path, map field names and return list of JSON formatted rows
 # filePath: specify relative path from this file
 # fieldnames: specify field names in form of a list
@@ -51,10 +71,10 @@ def readCsvFileToJSON(filePath, fieldnames, wrappingword='item'):
 		list = []
 		reader = csv.DictReader(inFile, fieldnames = fieldnames)		# map the field names
 		for row in reader:
-			sublist = {}
+			dict = {}
 			for field in row:
-				sublist.update({field: row[field]})
-			list.append(sublist)
+				dict.update({field: row[field]})
+			list.append(dict)
 	return json.JSONEncoder().encode({wrappingword: list})
 # writes specified list to a csv file in specified path
 def writeCsvFile(list, filePath):
@@ -156,7 +176,7 @@ def deleteComment():
 	id = request.form['cmt_id']
 	row = findCsvRow(commentsPath, fieldNames, 'id', id)
 	if checkPermissions(row['author']) == True:
-		replaceCsvRow(commentsPath, [], fieldNames)
+		replaceCsvRow(commentsPath, {'id': id}, fieldNames, delete=True)
 		return json.dumps({'status': 'OK'})
 	else:
 		return redirect('/reviews', code=401)	# 401 Unauthorised

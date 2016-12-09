@@ -178,7 +178,31 @@ function modifyComment(id)
 
 function deleteComment(id)
 {
-	
+	var response = confirm('Are you sure you want to delete this comment?');
+	if(response)
+	{
+		$.ajax
+		(
+			{
+				url: '/deleteComment',
+				data: 'cmt_id=' + id,
+				type: 'POST',
+				success: function(response)
+				{
+					response = JSON.parse(response);
+					if(response.status == "OK")
+					{
+						$('div#cmt_' + id).remove();
+						alert('Comment removed!');
+					}
+				},
+				error: function(response)
+				{
+					
+				}
+			}
+		);
+	}
 }
 
 function clearComment()
