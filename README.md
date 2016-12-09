@@ -12,7 +12,7 @@ Advanced features (but it would be nice to implement them):
 - HTTPS with proper certificate (use Let's Encrypt)
 - limiting amount of comments per page
 - modifying comments (done)
-- deleting comments (work in progress)
+- deleting comments (done)
 - detecting duplicate bookings
 - user authentication (work in progress; register page needs to be done)
 - password protection (hashing with salt)
