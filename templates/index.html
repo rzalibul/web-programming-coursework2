@@ -12,6 +12,9 @@
 				{% if session['username'] %}
 				<span> Hello {{session['username']}} </span>
 				<button type="button" value="Logout" onclick="logout()">Logout</button>
+					{% if session['isAdmin'] == True %}
+						<span>Admin permission granted</span>
+					{% endif %}
 				{% else %}
 				<form id="login" action="/login" method="post" role="form">
 					Username: <input id="username" name="username" type="text" /><br />

@@ -34,22 +34,20 @@
 					<a class="sideNavLink" onClick="clearComment()">Clear comment</a>
 				</div>
 				<div id="contentWrap">
-					<span id="intro"></span>	<!-- labeling for a link -->
-					<!-- <p class="intro">
-						Something about leaving a comment
-					</p> -->
 					<div id="commentWrap">
 						<h2>Reviews and comments</h2>
 						<div id="commentList">
 							<!--
-								here will appear JavaScript-loaded comments
+								here will appear JavaScript-loaded comments from Python data
 							-->
 						</div>
 						<div id="commentArea">
 							<form id="reviewForm" action="/saveComment" method="post" role="form">
 								<h2>Your review or comment</h2>
 								{% if not(session['username']) %}
-								Your name: <input id="nameBox" name="author" type="text" maxlength="32" size="20" placeholder="Enter your name..." /><br />
+								Your name: <input id="nameBox" name="author" type="text" maxlength="32" size="20" value="Anonymous" readonly /><br />
+								{% else %}
+								Your name: <input id="nameBox" name="author" type="text" maxlength="32" size="20" value={{session['username']}} readonly /><br />
 								{% endif %}
 								Your comment: <textarea id="commentBox" name="comment" placeholder="Enter your comment..."></textarea><br />
 								Your rating (if applicable): 

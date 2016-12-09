@@ -50,11 +50,11 @@ function logout()
 			type: 'GET',
 			success: function(response)
 			{
-				
+				location.reload();
 			},
 			error: function(response)
 			{
-				
+				console.log(response);
 			}
 		}
 	);
@@ -95,8 +95,8 @@ function saveComment()
 	// $('.stars.starSelected').removeClass('starSelected');			// clear the remembered rating from the commenting area
 	// setObject('comments', $('#commentList').html());
 	
-	var cText = $('#commentBox').val();
-	var cName = $('#nameBox').val();
+//	var cText = $('#commentBox').val();
+//	var cName = $('#nameBox').val();
 	// above could be used for client-side validation
 	var rating = 5 - $('span.stars.starSelected').index();				// nodes are in inverted order (check reviews.css if required)
 	$('input#hiddenRating').val(rating);								// wrap the rating in an input element to push through HTTP request
@@ -121,7 +121,7 @@ function saveComment()
 					curRating = curRating.replace('class="starSelected"', '');
 				}
 				var prevComments = $('#commentList').html();
-				var curComment = '<span class="cmtName">' + cmtList.author + ' says:' + '</span><p class="comment">' + cmtList.comment + '</p>' + 'Rating:' + curRating + '<span class="date">' + cmtList.date + '</span><br />' + prevComments;
+				var curComment = '<div id="cmt_' + cmtList.id + '"><span class="cmtName">' + cmtList.author + ' says:' + '</span><p class="comment">' + cmtList.comment + '</p>' + 'Rating:' + curRating + '<span class="date">' + cmtList.date + '</span><button class="cmtBtn" value="Modify" onclick="modifyComment(' + cmtList.id + ')">Modify</button><button class="cmtBtn" value="Delete" onclick="deleteComment(' + cmtList.id + ')">Delete</button></div>' + prevComments;
 				$('#commentList').empty();
 				$('#commentList').append(curComment);
 			},
@@ -131,6 +131,16 @@ function saveComment()
 			}
 		}
 	);
+}
+
+function modifyComment(id)
+{
+	
+}
+
+function deleteComment(id)
+{
+	
 }
 
 function clearComment()
@@ -166,7 +176,7 @@ function fetchComments()
 						{
 							curRating = curRating.replace('class="starSelected"', '');
 						}
-						comments += '<span class="cmtName">' + val.author + ' says:' + '</span><p class="comment">' + val.comment + '</p>' + 'Rating:' + curRating + '<span class="date">' + val.date + '</span><br />';
+						comments += '<div id="cmt_' + val.id + '"><span class="cmtName">' + val.author + ' says:' + '</span><p class="comment">' + val.comment + '</p>' + 'Rating:' + curRating + '<span class="date">' + val.date + '</span><button class="cmtBtn" value="Modify" onclick="modifyComment(' + cmtList.id + ')">Modify</button><button class="cmtBtn" value="Delete" onclick="deleteComment(' + cmtList.id + ')">Delete</button></div>';
 					}
 				);
 				$('#commentList').append(comments);

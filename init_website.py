@@ -19,11 +19,28 @@ def findCsvRow(filePath, fieldnames, field, val):
 	with open(filePath, 'r') as inFile:
 		reader = csv.DictReader(inFile, fieldnames = fieldnames)		# map the field names
 		for row in reader:
-			if row[field] == val:
+			if row[field] == val:				
 				return row
 	# no matches found; return empty string
-	# potential error(?); empty list should be returned
-	return ""
+	return []
+
+# replace a row with certain ID value
+# filePath: specify relative path from this file
+# rowReplacement: row that should replace a row with certain ID value
+# returns False if there was no row to replace and True if there was
+def replaceCsvRow(filePath, rowReplacement):
+	aList = readCsvFile(filePath)
+	for index, row in enumerate(aList):
+		# safely cast into int to enforce one type
+		if int(row[0]) == int(rowReplacement['id']):
+			aList[index] = rowReplacement
+			# break out of the loop; IDs are unique
+			break
+		else:
+			return False
+	writeCsvFile(aList, filePath)
+	return True
+
 # reads a csv file in specified path, map field names and return list of JSON formatted rows
 # filePath: specify relative path from this file
 # fieldnames: specify field names in form of a list
@@ -44,6 +61,12 @@ def writeCsvFile(list, filePath):
 		writer = csv.writer(outFile)
 		writer.writerows(list)
 	return
+	
+# checks user permission in regards to specific author of content (e.g. comment)
+# only the user who created the content and an admin can manipulate such content
+# owner: name of the user who owns the content
+def checkPermissions(owner):
+	return session['username'] == owner or session['isAdmin'] == True
 
 app = Flask(__name__)
 
@@ -73,7 +96,10 @@ def gallery():
 @app.route('/saveComment', methods=['POST'])
 def saveComment():
 	commentsPath = "static\\comments.csv"
-	name = request.form['author']
+	if 'username' in session:
+		name = session['username']
+	else:
+		name = "Anonymous"
 	comment = request.form['comment']
 	rating = request.form['rating']
 	
@@ -82,21 +108,46 @@ def saveComment():
 	# to do: proper timezone formatting (use pytz maybe)
 	
 	list = readCsvFile(commentsPath)
-	newEntry = [name, comment, rating, date]
+	maxVal = 0
+	# find maximum id value in the list
+	for row in list:
+		if int(row[0]) > maxVal:
+			maxVal = int(row[0])
+	# set new entry ID to successor to the maximum value
+	id = maxVal + 1
+	newEntry = [id, name, comment, rating, date]
 	list.append(newEntry)
 	writeCsvFile(list, commentsPath)
 	# dump data sent in JSON format
-	return json.dumps({'status': 'OK', 'author': name, 'comment': comment, 'rating': rating, 'date': date})
+	return json.dumps({'status': 'OK', 'id': id, 'author': name, 'comment': comment, 'rating': rating, 'date': date})
 
 @app.route('/fetchComments', methods=['GET'])
 def fetchComments():
 	commentsPath = "static\\comments.csv"
 	# file format: author, text, rating, date
-	fieldNames = ['author', 'comment', 'rating', 'date']
+	fieldNames = ['id', 'author', 'comment', 'rating', 'date']
 	# dump list of JSON formatted data
 	list = readCsvFileToJSON(commentsPath, fieldNames)
 	return json.dumps(list)
 
+@app.route('/modifyComment', methods=['POST'])
+def modifyComment():
+	commentsPath = "static\\comments.csv"
+	fieldNames = ['id', 'author', 'comment', 'rating', 'date']
+	id = request.form['cmt_id']
+	row = findCsvRow(commentsPath, fieldNames, 'id', id)
+	if checkPermissions(row['author']) == True:
+		row['comment'] = request.form['comment']
+		row['rating'] = request.form['rating']
+		row['date'] = datetime.utcnow().strftime("%d %b %Y %H:%M:%S %Z %z")
+		if replaceCsvRow(commentsPath, row):
+			return json.dumps({'status': 'OK', 'id': row['id'], 'author': row['author'], 'comment': row['comment'], 'rating': row['rating'], 'date': row['date']})
+		else:
+			# placeholder return for now
+			return redirect('/reviews')
+	else:
+		return redirect('/reviews', code=401)	# 401 Unauthorised
+	
 @app.route('/register')
 def register():
 	return render_template('register.html')
@@ -106,18 +157,20 @@ def login():
 	usersPath = "static\\users.csv"
 	username = request.form['username']
 	password = request.form['pwd']
-	fieldNames = ['username', 'password']
+	fieldNames = ['username', 'password', 'permission']
 	record = findCsvRow(usersPath, fieldNames, 'username', username)
 	if record != "":
 		if record['password'] == password:
 			session['username'] = username
+			if record['permission'] == "admin":
+				session['isAdmin'] = True
 			return redirect('/')
 	return redirect('/')
 
 @app.route('/logout', methods=['GET'])
 def logout():
 	session.clear()
-	return redirect('/')
+	return redirect('/', code=200)		# send 200 OK response
 	
 if __name__ == '__main__':
 	# pseudo RNG key for sessions
