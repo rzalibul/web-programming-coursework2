@@ -30,7 +30,7 @@
 			</div>
 			<div id="main">
 				<div id="sideNav">
-					<a class="sideNavLink" form="reviewForm" onClick="saveComment()">Save comment</a>
+					<a class="sideNavLink" onClick="saveComment()">Save comment</a>
 					<a class="sideNavLink" onClick="clearComment()">Clear comment</a>
 				</div>
 				<div id="contentWrap">
@@ -41,15 +41,15 @@
 								here will appear JavaScript-loaded comments from Python data
 							-->
 						</div>
-						<div id="commentArea">
-							<form id="reviewForm" action="/saveComment" method="post" role="form">
+						<div class="commentArea">
+							<form id="newCmt" class="reviewForm" action="/saveComment" method="post" role="form">
 								<h2>Your review or comment</h2>
 								{% if not(session['username']) %}
-								Your name: <input id="nameBox" name="author" type="text" maxlength="32" size="20" value="Anonymous" readonly /><br />
+								Your name: <input class="nameBox" name="author" type="text" maxlength="32" size="20" value="Anonymous" readonly /><br />
 								{% else %}
-								Your name: <input id="nameBox" name="author" type="text" maxlength="32" size="20" value={{session['username']}} readonly /><br />
+								Your name: <input class="nameBox" name="author" type="text" maxlength="32" size="20" value={{session['username']}} readonly /><br />
 								{% endif %}
-								Your comment: <textarea id="commentBox" name="comment" placeholder="Enter your comment..."></textarea><br />
+								Your comment: <textarea class="commentBox" name="comment" placeholder="Enter your comment..."></textarea><br />
 								Your rating (if applicable): 
 								<div class="rating">
 									<span class="stars">&#9734;</span>
@@ -58,7 +58,7 @@
 									<span class="stars">&#9734;</span>
 									<span class="stars">&#9734;</span>
 								</div>
-								<input id="hiddenRating" name="rating" type="number" hidden />
+								<input class="hiddenRating" name="rating" type="number" hidden />
 							</form>
 						</div>
 					</div>

@@ -63,56 +63,28 @@ function logout()
 /* review page functionality */
 function saveComment()
 {
-	// client-side code (redundant; for now leave it here)
-	// var cText = escapeHtml($('#commentBox').val());			// escape certain characters to prevent XSS injection
-	// var cName = $('#nameBox').val();
-	// if (cName === "")
-		// cName = "Anonymous";
-	// else
-		// cName = escapeHtml(cName);							// if it's not an empty string, escape certain characters
-		
-	// var prevComments = $('#commentList').html() == '<span class="cmtName">No comments</span>' ? "" : $('#commentList').html();
-	// var prevLinks = $('#sideNav').html();
-	// // if there are no comments loaded, 'No comments' span element is present and in order to remove it, it needs to be checked
-	// // if it is present, assign empty string, otherwise proceed normally
-	// /*
-		// equivalent to:
-		// var prevComments;
-		// if($('#commentList').html() == '<span class="cmtName">No comments</span>')
-			// prevComments = "";
-		// else
-			// prevComments = $('#commentList').html();
-	// */
-	// if ($('.stars.starSelected').length)
-		// var curRating = "<div class='rating'>" + $('div#commentArea > div.rating').html().split('stars').join('') + "</div>";
-		// // find the div.rating that is in the comment area, take the string and remove the stars class from the string
-		// // to do: something more sophisticated to remove 'class' from the string if there is none 
-	// else
-		// var curRating = "<p>No rating</p>";
-	// var curComment = '<span class="cmtName">' + cName + ' says:' + '</span><p class="comment">' + cText + '</p>' + 'Rating:' + curRating + '<span class="date">' + Date() + '</span><br />' + prevComments;
-	// $('#commentList').empty();
-	// $('#commentList').append(curComment);
-	// $('.stars.starSelected').removeClass('starSelected');			// clear the remembered rating from the commenting area
-	// setObject('comments', $('#commentList').html());
-	
 //	var cText = $('#commentBox').val();
 //	var cName = $('#nameBox').val();
 	// above could be used for client-side validation
-	var rating = 5 - $('span.stars.starSelected').index();				// nodes are in inverted order (check reviews.css if required)
-	$('input#hiddenRating').val(rating);								// wrap the rating in an input element to push through HTTP request
-	// potential bug: rating may be undefined when none was selected
-	
+	if ($('span.stars.starSelected').index() != -1)						// if a star has been selected, proceed
+	{
+		var rating = 5 - $('span.stars.starSelected').index();			// nodes are in inverted order (check reviews.css if required)
+		$('form#newCmt > input.hiddenRating').val(rating);				// wrap the rating in an input element to push through HTTP request
+	}
+	else
+		$('form#newCmt > input.hiddenRating').val(0);					// otherwise, set rating to 0
 	$.ajax
 	(
 		{
 			url: '/saveComment',
-			data: $('form#reviewForm').serialize(),
+			data: $('form#newCmt').serialize(),
 			type: 'POST',
 			success: function(response)
 			{
-				// parse the response into proper fields (author, comment, rating, date)
+				// parse the response into proper fields (id, author, comment, rating, date)
 				var cmtList = JSON.parse(response);
 				// format it into proper HTML
+				// to do: if cmtList.rating == 0 then don't add rating stars/add "no rating" string
 				cmtList.rating = -1*(parseInt(cmtList.rating) - 5);				// revert the node index back
 				var curRating = '<div class=rating><span class="starSelected">&#9734;</span><span class="starSelected">&#9734;</span><span class="starSelected">&#9734;</span><span class="starSelected">&#9734;</span><span class="starSelected">&#9734;</span></div>';
 				// remove the star selection until the rating is adjusted properly
@@ -122,6 +94,7 @@ function saveComment()
 				}
 				var prevComments = $('#commentList').html();
 				var curComment = '<div id="cmt_' + cmtList.id + '"><span class="cmtName">' + cmtList.author + ' says:' + '</span><p class="comment">' + cmtList.comment + '</p>' + 'Rating:' + curRating + '<span class="date">' + cmtList.date + '</span><button class="cmtBtn" value="Modify" onclick="modifyComment(' + cmtList.id + ')">Modify</button><button class="cmtBtn" value="Delete" onclick="deleteComment(' + cmtList.id + ')">Delete</button></div>' + prevComments;
+				// to do: buttons are only visible if user is in session
 				$('#commentList').empty();
 				$('#commentList').append(curComment);
 			},
@@ -135,7 +108,72 @@ function saveComment()
 
 function modifyComment(id)
 {
-	
+	//id = parseInt(id);
+	// check whether another comment area exists that isn't the one that is associated with the currently clicked button
+	if($('div.commentArea > form[id^="modCmt_"]').length && ($('div.commentArea > form[id^="modCmt_"]').attr('id') != ('modCmt_' + id)))
+	{
+		// a comment area for modifying comments already exists for another node - remove it
+		$('div.commentArea > form[id^="modCmt_"]').remove();
+		modifyComment.isFirstClick = !(modifyComment.isFirstClick);		// change the state of property to correct the state of the comment form
+	}
+	// negate the function property to keep track of whether the form should be opened or XHR should be sent (or create it if undefined)
+	modifyComment.isFirstClick = !(modifyComment.isFirstClick);
+	if(modifyComment.isFirstClick)
+	{
+		var newCmtArea = '<div class="commentArea"><form id="modCmt_' + id + '" class="reviewForm" action="/modifyComment" method="post" role="form">Your modified comment: <textarea class="commentBox" name="comment" placeholder="Enter your comment..."></textarea><br />Your rating (if applicable): <div class="rating"><span class="stars">&#9734;</span><span class="stars">&#9734;</span><span class="stars">&#9734;</span><span class="stars">&#9734;</span><span class="stars">&#9734;</span></div><input class="hiddenRating" name="rating" type="number" hidden /></form></div>'
+		$('div#cmt_' + id).append(newCmtArea);		// append the comment area for modifying comments
+		// attach an event
+		$('span.stars').click						// selects a particular rating on click
+		(
+			function(event)
+			{
+				$('span.stars.starSelected').removeClass('starSelected');
+				$(event.target).addClass('starSelected');
+			}
+		);
+	}
+	else
+	{
+		if ($('form#modCmt_' + id + '> div.rating > span.stars.starSelected').index() != -1)					// if a star has been selected, proceed
+		{
+			var rating = 5 - $('form#modCmt_' + id + '> div.rating > span.stars.starSelected').index();			// nodes are in inverted order (check reviews.css if required)
+			$('form#modCmt_' + id + ' > input.hiddenRating').val(rating);							// wrap the rating in an input element to push through HTTP request
+		}
+		else
+			$('form#modCmt_' + id + ' > input.hiddenRating').val(0);								// otherwise, set rating to 0
+		// send data
+		$.ajax
+		(
+			{
+				url: '/modifyComment',
+				data: $('form#modCmt_' + id).serialize() + '&cmt_id=' + id,
+				type: 'POST',
+				success: function(response)
+				{
+					console.log(response);
+					var modifiedCmt = JSON.parse(response);
+					modifiedCmt.rating = -1*(parseInt(modifiedCmt.rating) - 5);		// format the rating for correct display in DOM
+					var curRating = '<div class=rating><span class="starSelected">&#9734;</span><span class="starSelected">&#9734;</span><span class="starSelected">&#9734;</span><span class="starSelected">&#9734;</span><span class="starSelected">&#9734;</span></div>';
+					// remove the star selection until the rating is adjusted properly
+					for (var i = 0; i < modifiedCmt.rating; i++)
+					{
+						curRating = curRating.replace('class="starSelected"', '');
+					}
+					var curComment = '<span class="cmtName">' + modifiedCmt.author + ' says:' + '</span><p class="comment">' + modifiedCmt.comment + '</p>' + 'Rating:' + curRating + '<span class="date">' + modifiedCmt.date + '</span><button class="cmtBtn" value="Modify" onclick="modifyComment(' + modifiedCmt.id + ')">Modify</button><button class="cmtBtn" value="Delete" onclick="deleteComment(' + modifiedCmt.id + ')">Delete</button>';
+					
+					$('div#cmt_' + id).empty();
+					$('div#cmt_' + id).append(curComment);
+					// no need to remove the commenting section as it was already emptied
+				},
+				error: function(response)
+				{
+					console.log(response);
+					// remove the comment section
+					$('form#modCmt_' + id).remove();
+				}
+			}
+		);
+	}
 }
 
 function deleteComment(id)
@@ -161,7 +199,7 @@ function fetchComments()
 			{
 				//console.log(data);
 				var cmtList = JSON.parse(data);
-				cmtList = cmtList.item;				// default value for the whole collection (see init_website.py fetchComments subroutine)
+				cmtList = cmtList.item;				// default value for the whole collection (see init_website.py fetchComments and CsvFileToJSON subroutines)
 				var comments = '';
 				var curRating;
 				$.each
@@ -176,7 +214,7 @@ function fetchComments()
 						{
 							curRating = curRating.replace('class="starSelected"', '');
 						}
-						comments += '<div id="cmt_' + val.id + '"><span class="cmtName">' + val.author + ' says:' + '</span><p class="comment">' + val.comment + '</p>' + 'Rating:' + curRating + '<span class="date">' + val.date + '</span><button class="cmtBtn" value="Modify" onclick="modifyComment(' + cmtList.id + ')">Modify</button><button class="cmtBtn" value="Delete" onclick="deleteComment(' + cmtList.id + ')">Delete</button></div>';
+						comments += '<div id="cmt_' + val.id + '"><span class="cmtName">' + val.author + ' says:' + '</span><p class="comment">' + val.comment + '</p>' + 'Rating:' + curRating + '<span class="date">' + val.date + '</span><button class="cmtBtn" value="Modify" onclick="modifyComment(' + val.id + ')">Modify</button><button class="cmtBtn" value="Delete" onclick="deleteComment(' + val.id + ')">Delete</button></div>';
 					}
 				);
 				$('#commentList').append(comments);

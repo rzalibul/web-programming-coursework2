@@ -21,25 +21,26 @@ def findCsvRow(filePath, fieldnames, field, val):
 		for row in reader:
 			if row[field] == val:				
 				return row
-	# no matches found; return empty string
+	# no matches found; return empty list
 	return []
 
 # replace a row with certain ID value
 # filePath: specify relative path from this file
-# rowReplacement: row that should replace a row with certain ID value
-# returns False if there was no row to replace and True if there was
-def replaceCsvRow(filePath, rowReplacement):
+# rowReplacement: mapped row of a dictionary that should replace a row with certain ID value
+def replaceCsvRow(filePath, rowReplacement, fieldnames):
 	aList = readCsvFile(filePath)
 	for index, row in enumerate(aList):
 		# safely cast into int to enforce one type
-		if int(row[0]) == int(rowReplacement['id']):
-			aList[index] = rowReplacement
+		if int(row[0]) == int(rowReplacement[fieldnames[0]]):
+			counter = 0
+			for field in rowReplacement:
+				aList[index][counter] = rowReplacement[fieldnames[counter]]
+				counter += 1
 			# break out of the loop; IDs are unique
 			break
-		else:
-			return False
+	print(aList)
 	writeCsvFile(aList, filePath)
-	return True
+	return
 
 # reads a csv file in specified path, map field names and return list of JSON formatted rows
 # filePath: specify relative path from this file
@@ -66,7 +67,10 @@ def writeCsvFile(list, filePath):
 # only the user who created the content and an admin can manipulate such content
 # owner: name of the user who owns the content
 def checkPermissions(owner):
-	return session['username'] == owner or session['isAdmin'] == True
+	if 'username' in session:
+		return session['username'] == owner or session['isAdmin'] == True
+	else:
+		return False
 
 app = Flask(__name__)
 
@@ -124,7 +128,7 @@ def saveComment():
 @app.route('/fetchComments', methods=['GET'])
 def fetchComments():
 	commentsPath = "static\\comments.csv"
-	# file format: author, text, rating, date
+	# file format: id, author, text, rating, date
 	fieldNames = ['id', 'author', 'comment', 'rating', 'date']
 	# dump list of JSON formatted data
 	list = readCsvFileToJSON(commentsPath, fieldNames)
@@ -140,14 +144,25 @@ def modifyComment():
 		row['comment'] = request.form['comment']
 		row['rating'] = request.form['rating']
 		row['date'] = datetime.utcnow().strftime("%d %b %Y %H:%M:%S %Z %z")
-		if replaceCsvRow(commentsPath, row):
-			return json.dumps({'status': 'OK', 'id': row['id'], 'author': row['author'], 'comment': row['comment'], 'rating': row['rating'], 'date': row['date']})
-		else:
-			# placeholder return for now
-			return redirect('/reviews')
+		replaceCsvRow(commentsPath, row, fieldNames)
+		return json.dumps({'status': 'OK', 'id': row['id'], 'author': row['author'], 'comment': row['comment'], 'rating': row['rating'], 'date': row['date']})
 	else:
 		return redirect('/reviews', code=401)	# 401 Unauthorised
-	
+
+@app.route('/deleteComment', methods=['POST'])
+def deleteComment():
+	commentsPath = "static\\comments.csv"
+	fieldNames = ['id', 'author', 'comment', 'rating', 'date']
+	id = request.form['cmt_id']
+	row = findCsvRow(commentsPath, fieldNames, 'id', id)
+	if checkPermissions(row['author']) == True:
+		replaceCsvRow(commentsPath, [], fieldNames)
+		return json.dumps({'status': 'OK'})
+	else:
+		return redirect('/reviews', code=401)	# 401 Unauthorised
+		
+# possible refactoring of deleteComment and modifyComment by putting same code into subroutine
+
 @app.route('/register')
 def register():
 	return render_template('register.html')
