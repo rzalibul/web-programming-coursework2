@@ -84,6 +84,10 @@ def attractions():
 def reviews():
 	return render_template('reviews.html')
 
+@app.route('/booking')
+def booking():
+	return render_template('booking.html')
+
 @app.route('/contactus')
 def contactus():
 	return render_template('contactus.html')
@@ -172,6 +176,29 @@ def logout():
 	session.clear()
 	return redirect('/', code=200)		# send 200 OK response
 	
+@app.route('/thankyou')
+def thankyou():
+	return render_template('thankyou.html')    
+
+@app.route('/bookform', methods=['POST'])
+def bookform():
+    bookingPath = "static\\booking.csv"
+    bookingList = []
+    
+    # retrieve fields
+    bookingList.append(request.form['firstname'])
+    bookingList.append(request.form['lastname'])
+    bookingList.append(request.form['email'])
+    bookingList.append(request.form['tel'])
+    bookingList.append(request.form['arrival'])
+    bookingList.append(request.form['departure'])
+    
+    # write booking list
+    writeCsvFile(bookingList, bookingPath)
+    
+    # send user to the thank you page
+    return redirect('/thankyou')
+
 if __name__ == '__main__':
 	# pseudo RNG key for sessions
 	app.secret_key = '\x0e\xdd\xbb\x86j2\xff-\xf3\\S[\xc0\x1a$\xa6t\x04\xd3\x87!\x1f\x9a,'
