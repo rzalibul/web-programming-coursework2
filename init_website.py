@@ -180,24 +180,36 @@ def logout():
 def thankyou():
 	return render_template('thankyou.html')    
 
-@app.route('/bookform', methods=['POST'])
+@app.route('/bookform', methods=['POST'])                     
 def bookform():
-    bookingPath = "static\\booking.csv"
-    bookingList = []
-    
-    # retrieve fields
-    bookingList.append(request.form['firstname'])
-    bookingList.append(request.form['lastname'])
-    bookingList.append(request.form['email'])
-    bookingList.append(request.form['tel'])
-    bookingList.append(request.form['arrival'])
-    bookingList.append(request.form['departure'])
-    
-    # write booking list
-    writeCsvFile(bookingList, bookingPath)
-    
-    # send user to the thank you page
-    return redirect('/thankyou')
+        bookingPath = "static\\booking.csv"
+        # retrieve variables from form
+        firstName = request.form['firstname']
+        lastName = request.form['lastname']
+        email = request.form['email']
+        tel = request.form['tel']
+        arrival = request.form['arrival']
+        departure = request.form['departure']
+        
+        list = readCsvFile(bookingPath)
+        maxVal = 0
+
+        # find maximum id value in the list
+        for row in list:
+                if int(row[0]) > maxVal:
+                        maxVal = int(row[0])
+
+        # set new entry ID to successor to the maximum value
+        id = maxVal + 1
+        newEntry = [id, firstName, lastName, email, tel, arrival, departure]
+        list.append(newEntry)
+        writeCsvFile(list, bookingPath)
+
+        # keeping this just in case i need it later
+        # return json.dumps({'status': 'OK', 'id': id, 'First Name': firstName, 'Last Name': lastName, 'Email': email, 'tel': tel, 'arrival' : arrival, 'departure': departure})
+        
+        return redirect('/thankyou')    
+
 
 if __name__ == '__main__':
 	# pseudo RNG key for sessions
