@@ -31,23 +31,46 @@
 			<div id="main">
                 <div id="contentWrap">
 					<h2 id="intro">Booking</h2>
+					{% if not(session['username'] and bookingList) %}
                     <p>Please fill in all fields of the form:</p>
                     
                     <form action="/bookform" method="POST">
-                        First Name:<br>
-                        <input type="text" name="firstname" placeholder="First Name"><br>
-                        Last Name:<br>
-                        <input type="text" name="lastname" placeholder="Last Name"><br>
-                        Email:<br>
-                        <input type="email" name="email" placeholder="Email"><br>
-                        Telephone No:<br>
-                        <input type="tel" name="tel" placeholder="Telephone No."><br>
-                        Arrival Date<br>
-                        <input type="date" name="arrival"><br>
-                        Departure Date<br>
-                        <input type="date" name="departure"><br>
-			            <input type="submit" value="Submit"><br>
+                        First Name:<br />
+                        <input type="text" name="firstname" placeholder="First Name" /><br />
+                        Last Name:<br />
+                        <input type="text" name="lastname" placeholder="Last Name" /><br />
+                        Email:<br />
+                        <input type="email" name="email" placeholder="Email" /><br />
+                        Telephone No:<br />
+                        <input type="tel" name="tel" placeholder="Telephone No." /><br />
+                        Arrival Date<br />
+                        <input type="date" name="arrival" /><br />
+                        Departure Date<br />
+                        <input type="date" name="departure" /><br />
+			            <input type="submit" value="Submit" /><br />
                     </form>
+					{% else %}
+					<table id="bookings" border=1>
+						<tr>
+							<td>ID</td><td>Username</td><td>First Name</td><td>Last Name</td><td>Email</td><td>Telephone Number</td><td>Arrival Date</td><td>Departure Date</td><td>Submission Date</td><td>Status</td>
+						</tr>
+							<tr>
+								{% if isList %}
+									{% for val in bookingList %}
+									<tr>
+										{% for key, dictValue in val.items() %}
+										<td>{{dictValue}}</td>
+										{% endfor %}
+									</tr>
+									{% endfor %}
+								{% else %}
+									{% for key, value in bookingList.items() %}
+									<td>{{value}}</td>
+									{% endfor %}
+								{% endif %}
+							</tr>
+					</table>
+					{% endif %}
                 </div>
 			</div>
 			<div id="footer">

@@ -1,8 +1,8 @@
-from flask import Flask, render_template, session, redirect
-from flask import request
+from flask import Flask, render_template, session, redirect, request
 import csv
 import json
 from datetime import datetime
+from collections import OrderedDict
 
 # simple CSV reading
 def readCsvFile(filePath):
@@ -10,19 +10,30 @@ def readCsvFile(filePath):
 		reader = csv.reader(inFile)
 		aList = [row for row in reader]
 	return aList
-# find a value in CSV file and return the row; if value is not present, return an empty string
+# find a value in CSV file by using linear search and return the row which is a dictionary; if value is not present, return an empty list
 # filePath: specify relative path from this file
 # fieldnames: specify field names in form of a list
 # field: specify the field for the sought value
 # val: specify sought value
-def findCsvRow(filePath, fieldnames, field, val):
+# (optional) iterate: specify whether all values should be returned in a list of dictionaries or just the first encountered row
+def findCsvRow(filePath, fieldnames, field, val, iterate=False):
+	list = []
 	with open(filePath, 'r') as inFile:
-		reader = csv.DictReader(inFile, fieldnames = fieldnames)		# map the field names
+		reader = csv.reader(inFile)
 		for row in reader:
-			if row[field] == val:				
-				return row
+			counter = 0
+			dict = OrderedDict()
+			for item in row:
+				dict.update({fieldnames[counter]: item})				# create another entry
+				dict.move_to_end(fieldnames[counter])					# and move to the end as OrderedDict doesn't maintain sorted order after changing the already constructed object
+				counter += 1
+			if dict[field] == val:
+				if iterate:
+					list.append(dict)
+				else:
+					return dict
 	# no matches found; return empty list
-	return []
+	return list
 
 # replace a row with certain value in the 0th index; if delete is present, the function will only look at the first mapped field to find the record and then delete it
 # filePath: specify relative path from this file
@@ -46,22 +57,6 @@ def replaceCsvRow(filePath, rowReplacement, fieldnames, delete=False):
 	writeCsvFile(aList, filePath)
 	return
 
-# delete first encountered csv row that matches the search by search field
-# filePath:	specify relative path from this file
-# fieldnames: specify field names in form of a list
-# searchField: specify a mapped field which contains 
-# def deleteCsvRow(filePath, fieldnames, searchField, val):
-	# list = []
-	# with open(filePath, 'r') as inFile:
-		# reader = csv.DictReader(inFile, fieldnames = fieldnames)
-		# for row in reader:
-			# dict = {}
-			# for field in row:
-				# if field == searchField and row[field] == val:
-					
-				# dict.update({field: row[field]})
-			# list.append(aDict)
-	
 # reads a csv file in specified path, map field names and return list of JSON formatted rows
 # filePath: specify relative path from this file
 # fieldnames: specify field names in form of a list
@@ -91,7 +86,14 @@ def checkPermissions(owner):
 		return session['username'] == owner or session['isAdmin'] == True
 	else:
 		return False
-
+# checks the first element of the two-dimensional list and returns the max value
+# list: a list which contains a castable integral value in the first index
+def max(list):
+	maxVal = 0
+	for row in list:
+		if int(row[0]) > maxVal:
+			maxVal = int(row[0])
+	return maxVal
 app = Flask(__name__)
 
 # double routing so the standard path is index page
@@ -110,7 +112,34 @@ def reviews():
 
 @app.route('/booking')
 def booking():
-	return render_template('booking.html')
+	bookingList = []
+	if 'username' in session:
+		bookingPath = "static\\booking.csv"
+		fieldNames = ['id', 'name', 'firstName', 'lastName', 'email', 'telNum', 'arrivalDate', 'departureDate', 'submitDate', 'status']
+		bookingList = findCsvRow(bookingPath, fieldNames, 'name', session['username'], iterate=True)
+		# check whether the bookingList is a list or a dictionary (first would imply more than one row, the second - just one row)
+		if isinstance(bookingList, list):
+			for dict in bookingList:
+				for key, dictValue in dict.items():
+					if key == 'status':
+						if int(dictValue) == 0:
+							dict[key] = 'waiting for approval'
+						elif int(dictValue) == 1:
+							dict[key] = 'request approved'
+						else:
+							dict[key] = 'request denied'
+			print(bookingList)
+			return render_template('booking.html', bookingList = bookingList, isList = True)
+		else:
+			if 'status' in bookingList:
+				if int(bookingList['status']) == 0:
+					bookingList['status'] = 'waiting for approval'
+				elif int(bookingList['status']) == 1:
+					bookingList['status'] = 'request approved'
+				else:
+					bookingList['status'] = 'request denied'
+			print(bookingList)
+			return render_template('booking.html', bookingList = bookingList, isList = False)
 
 @app.route('/contactus')
 def contactus():
@@ -132,17 +161,11 @@ def saveComment():
 	rating = request.form['rating']
 	
 	# format result is present in the csv file
-	date = datetime.utcnow().strftime("%d %b %Y %H:%M:%S %Z %z")
-	# to do: proper timezone formatting (use pytz maybe)
+	date = datetime.utcnow().strftime("%d %b %Y %H:%M:%S")
 	
 	list = readCsvFile(commentsPath)
-	maxVal = 0
-	# find maximum id value in the list
-	for row in list:
-		if int(row[0]) > maxVal:
-			maxVal = int(row[0])
 	# set new entry ID to successor to the maximum value
-	id = maxVal + 1
+	id = max(list) + 1
 	newEntry = [id, name, comment, rating, date]
 	list.append(newEntry)
 	writeCsvFile(list, commentsPath)
@@ -167,7 +190,7 @@ def modifyComment():
 	if checkPermissions(row['author']) == True:
 		row['comment'] = request.form['comment']
 		row['rating'] = request.form['rating']
-		row['date'] = datetime.utcnow().strftime("%d %b %Y %H:%M:%S %Z %z")
+		row['date'] = datetime.utcnow().strftime("%d %b %Y %H:%M:%S")
 		replaceCsvRow(commentsPath, row, fieldNames)
 		return json.dumps({'status': 'OK', 'id': row['id'], 'author': row['author'], 'comment': row['comment'], 'rating': row['rating'], 'date': row['date']})
 	else:
@@ -186,6 +209,8 @@ def deleteComment():
 		return redirect('/reviews', code=401)	# 401 Unauthorised
 		
 # possible refactoring of deleteComment and modifyComment by putting same code into subroutine
+
+# login and register functionality
 
 @app.route('/register')
 def register():
@@ -218,17 +243,21 @@ def thankyou():
 @app.route('/bookform', methods=['POST'])
 def bookform():
     bookingPath = "static\\booking.csv"
-    bookingList = []
-    
-    # retrieve fields
-    bookingList.append(request.form['firstname'])
-    bookingList.append(request.form['lastname'])
-    bookingList.append(request.form['email'])
-    bookingList.append(request.form['tel'])
-    bookingList.append(request.form['arrival'])
-    bookingList.append(request.form['departure'])
-    
-    # write booking list
+    bookingList = readCsvFile(bookingPath)
+    id = max(bookingList) + 1
+    if 'username' in session:
+        name = session['username']
+    else:
+        name = "Anonymous"
+    submitDate = datetime.utcnow().strftime("%d %b %Y %H:%M:%S")
+    # retrieve fields and wrap them into a list
+    newEntry = [id, name, request.form['firstname'], request.form['lastname'], request.form['email'], request.form['tel'], request.form['arrival'], request.form['departure'], submitDate, 0]
+	# last element signals booking status
+	# 0 = waiting for approval
+	# 1 = approved
+	# any other value = booking denied
+    bookingList.append(newEntry)
+	
     writeCsvFile(bookingList, bookingPath)
     
     # send user to the thank you page
