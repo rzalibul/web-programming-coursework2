@@ -51,7 +51,6 @@
 						<li><a href="booking">Book Now</a></li>
 						<li><a href="contactus">Contact</a></li>
 					</ul>
-				
 				</div>
 			</div>
 		</nav>
@@ -81,6 +80,7 @@
         <!-- Gallery -->
         <div class="jumbotron">
             <div class="container">
+                <h1>Gallery</h1>
                 <div class="row">
                     <div class="col-md-2"> <!-- Slides column -->
                         <div id="slides">
@@ -91,9 +91,19 @@
                             <img class="thumbnail" src="static/img/4.jpg" alt="Image 4" longdesc="3" />
                             <img class="thumbnail" src="static/img/5.jpg" alt="Image 5" longdesc="4" />
                         </div>
+                        
                     </div>
                     <div class="col-md-10"> <!-- Content column -->
-                        <p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
+                        <nav aria-label="gallerypage">
+                            <ul class="pager">
+                                <img id="fullSize" src="static/img/1.jpg" alt="Image 1" longdesc="0" />
+                                <li><a class="imgNav" id="prevImg" href="#">Previous</a></li>
+                                <li><a class="imgNav" id="nextImg" href="#">Next</a></li>
+                                <!-- <div class="fullScreen">
+                                </div>
+                                <img class="bigImage" src="img/1.jpg" /> -->
+                            </ul>
+                        </nav>
                     </div>
                 </div>
             </div>
