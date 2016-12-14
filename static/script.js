@@ -93,9 +93,7 @@ function saveComment()
 					curRating = curRating.replace('class="starSelected"', '');
 				}
 				var prevComments = $('#commentList').html();
-				//var curComment = '<div id="cmt_' + cmtList.id + '"><span class="cmtName">' + cmtList.author + ' says:' + '</span><p class="comment">' + cmtList.comment + '</p>' + 'Rating:' + curRating + '<span class="date">' + cmtList.date + '</span><button class="cmtBtn" value="Modify" onclick="modifyComment(' + cmtList.id + ')">Modify</button><button class="cmtBtn" value="Delete" onclick="deleteComment(' + cmtList.id + ')">Delete</button></div>' + prevComments;
-                
-                var curComment ='<div class="container"><div class="panel panel-default"><div class="panel-heading">('+ curRating + ') ' + cmtList.author + ' on ' + cmtList.date +'</div><div class="panel-body"><p>' + cmtList.comment + '</p><button type="button" class="btn btn-default pull-right">Delete</button><button type="button" class="btn btn-default pull-right">Modify</button></div></div></div>' + prevComments;
+				var curComment = '<div id="cmt_' + cmtList.id + '"><span class="cmtName">' + cmtList.author + ' says:' + '</span><p class="comment">' + cmtList.comment + '</p>' + 'Rating:' + curRating + '<span class="date">' + cmtList.date + '</span><button class="cmtBtn" value="Modify" onclick="modifyComment(' + cmtList.id + ')">Modify</button><button class="cmtBtn" value="Delete" onclick="deleteComment(' + cmtList.id + ')">Delete</button></div>' + prevComments;
 				// to do: buttons are only visible if user is in session
 				$('#commentList').empty();
 				$('#commentList').append(curComment);
@@ -200,7 +198,7 @@ function deleteComment(id)
 				},
 				error: function(response)
 				{
-					
+					console.log(response);
 				}
 			}
 		);
@@ -240,11 +238,7 @@ function fetchComments()
 						{
 							curRating = curRating.replace('class="starSelected"', '');
 						}
-                        /*
 						comments += '<div id="cmt_' + val.id + '"><span class="cmtName">' + val.author + ' says:' + '</span><p class="comment">' + val.comment + '</p>' + 'Rating:' + curRating + '<span class="date">' + val.date + '</span><button class="cmtBtn" value="Modify" onclick="modifyComment(' + val.id + ')">Modify</button><button class="cmtBtn" value="Delete" onclick="deleteComment(' + val.id + ')">Delete</button></div>';
-                        */
-                        comments += '<div class="container"><div class="panel panel-default"><div class="panel-heading">('+ curRating + ') ' + cmtList.author + ' on ' + cmtList.date +'</div><div class="panel-body"><p>' + cmtList.comment + '</p><button type="button" class="btn btn-default pull-right">Delete</button><button type="button" class="btn btn-default pull-right">Modify</button></div></div></div>' + prevComments;
-                        
 					}
 				);
 				$('#commentList').append(comments);
@@ -372,7 +366,7 @@ function changeSlidebar(imgList, index, reverse)						// if reverse is true, the
 		{
 			for(var j = 0; j < 5; j++)
 			{
-				$("div#prevSlidebarImg").after("<img class='thumbnail img-responsive' src='static/img/" + imgList[index - j] + "' alt='Image " + (index - j + 1) + "' longdesc='" + (index - j) + "' />");
+				$("div#prevSlidebarImg").after("<img class='thumbnail' src='static/img/" + imgList[index - j] + "' alt='Image " + (index - j + 1) + "' longdesc='" + (index - j) + "' />");
 				// subsequently append slidebar images
 			}
 			$("img.thumbnail").css("top", "-810px");		
@@ -545,5 +539,6 @@ $("img#fullSize").click
 				$(".fullScreen").remove();
 				$(".bigImage").remove();
 			}
+		);
 	}
 );
