@@ -32,7 +32,7 @@ def findCsvRow(filePath, fieldnames, field, val, iterate=False):
 					list.append(dict)
 				else:
 					return dict
-	# no matches found; return empty list
+	# return the list; if no values were found, the list will be empty
 	return list
 
 # replace a row with certain value in the 0th index; if delete is present, the function will only look at the first mapped field to find the record and then delete it
@@ -140,7 +140,7 @@ def booking():
 					bookingList['status'] = 'request denied'
 			print(bookingList)
 			return render_template('booking.html', bookingList = bookingList, isList = False)
-
+	return render_template('booking.html')
 @app.route('/contactus')
 def contactus():
 	return render_template('contactus.html')
@@ -240,11 +240,11 @@ def logout():
 def thankyou():
 	return render_template('thankyou.html')    
 
-@app.route('/bookform', methods=['POST'])
-def bookform():
-    bookingPath = "static\\booking.csv"
-    bookingList = readCsvFile(bookingPath)
-    id = max(bookingList) + 1
+@app.route('/saveBooking', methods=['POST'])
+def saveBooking():
+    bookingsPath = "static\\booking.csv"
+    bookingsList = readCsvFile(bookingsPath)
+    id = max(bookingsList) + 1
     if 'username' in session:
         name = session['username']
     else:
@@ -256,12 +256,24 @@ def bookform():
 	# 0 = waiting for approval
 	# 1 = approved
 	# any other value = booking denied
-    bookingList.append(newEntry)
+    bookingsList.append(newEntry)
 	
-    writeCsvFile(bookingList, bookingPath)
+    writeCsvFile(bookingsList, bookingsPath)
     
     # send user to the thank you page
     return redirect('/thankyou')
+
+@app.route('/deleteBooking', methods=['POST'])
+def deleteBooking():
+	bookingsPath = "static\\booking.csv"
+	fieldNames = ['id', 'name', 'firstName', 'lastName', 'email', 'telNum', 'arrivalDate', 'departureDate', 'submitDate', 'status']
+	id = request.form['booking_id']
+	row = findCsvRow(bookingsPath, fieldNames, 'id', id)
+	if checkPermissions(row['author']) == True:
+		replaceCsvRow(bookingsPath, {'id': id}, fieldNames, delete=True)
+		return json.dumps({'status': 'OK'})
+	else:
+		return redirect('/booking', code=401)	# 401 Unauthorised
 
 if __name__ == '__main__':
 	# pseudo RNG key for sessions

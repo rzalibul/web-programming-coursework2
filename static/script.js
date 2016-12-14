@@ -256,6 +256,41 @@ $('span.stars').click				// selects a particular rating on click
 	}
 );
 
+/* booking functionality */
+function modifyBooking(id)
+{
+	
+}
+
+function deleteBooking(id)
+{
+	var response = confirm('Are you sure you want to delete this booking request?');
+	if(response)
+	{
+		$.ajax
+		(
+			{
+				url: '/deleteBooking',
+				data: 'booking_id=' + id,
+				type: 'POST',
+				success: function(response)
+				{
+					response = JSON.parse(response);
+					if(response.status == "OK")
+					{
+						$('tr#booking_' + id).remove();
+						alert('Booking removed!');
+					}
+				},
+				error: function(response)
+				{
+					
+				}
+			}
+		);
+	}
+}
+
 /* gallery page functionality */
 function getImgList()				// returns a list of images
 {
@@ -291,7 +326,7 @@ function changeSlidebar(imgList, index, reverse)						// if reverse is true, the
 		{
 			for(var j = 0; j < 5; j++)
 			{
-				$("div#prevSlidebarImg").after("<img class='thumbnail' src='img/" + imgList[index - j] + "' alt='Image " + (index - j + 1) + "' longdesc='" + (index - j) + "' />");
+				$("div#prevSlidebarImg").after("<img class='thumbnail' src='static/img/" + imgList[index - j] + "' alt='Image " + (index - j + 1) + "' longdesc='" + (index - j) + "' />");
 				// subsequently append slidebar images
 			}
 			$("img.thumbnail").css("top", "-810px");		
@@ -338,7 +373,7 @@ function changeSlidebar(imgList, index, reverse)						// if reverse is true, the
 				}
 				else
 				{
-					$("div#nextSlidebarImg").before("<img class='thumbnail' src='img/" + imgList[index + j] + "' alt='Image " + (index + j + 1) +  "' longdesc='" + (index + j) + "' />");
+					$("div#nextSlidebarImg").before("<img class='thumbnail' src='static/img/" + imgList[index + j] + "' alt='Image " + (index + j + 1) +  "' longdesc='" + (index + j) + "' />");
 					// subsequently append slidebar images before the next slidebar iteration button 
 				}
 			}
@@ -412,7 +447,7 @@ $(".imgNav").click
 			if(imgList[index] != undefined)
 			{
 				var mainImg = document.getElementById("fullSize");
-				mainImg.src = "img/" + imgList[index];
+				mainImg.src = "static/img/" + imgList[index];
 				$(mainImg).attr("longdesc", index);
 				$(mainImg).attr("alt", "Image " + (index + 1));
 			}

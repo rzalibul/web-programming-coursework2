@@ -3,6 +3,7 @@
 	<head>
 		<title>Booking</title>
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/main.css') }}" />
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/booking.css') }}" />
         <meta charset="utf-8" />
 		<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 	</head>
@@ -34,7 +35,7 @@
 					{% if not(session['username'] and bookingList) %}
                     <p>Please fill in all fields of the form:</p>
                     
-                    <form action="/bookform" method="POST">
+                    <form class="bookingEntry" action="/saveBooking" method="POST">
                         First Name:<br />
                         <input type="text" name="firstname" placeholder="First Name" /><br />
                         Last Name:<br />
@@ -52,23 +53,24 @@
 					{% else %}
 					<table id="bookings" border=1>
 						<tr>
-							<td>ID</td><td>Username</td><td>First Name</td><td>Last Name</td><td>Email</td><td>Telephone Number</td><td>Arrival Date</td><td>Departure Date</td><td>Submission Date</td><td>Status</td>
+							<td>ID</td><td>Username</td><td>First Name</td><td>Last Name</td><td>Email</td><td>Telephone Number</td><td>Arrival Date</td><td>Departure Date</td><td>Submission Date</td><td>Status</td><td>Action</td>
 						</tr>
-							<tr>
-								{% if isList %}
-									{% for val in bookingList %}
-									<tr>
-										{% for key, dictValue in val.items() %}
-										<td>{{dictValue}}</td>
-										{% endfor %}
-									</tr>
+							{% if isList %}
+								{% for val in bookingList %}
+								<tr id="booking_{{val['id']}}">
+									{% for key, dictValue in val.items() %}
+									<td>{{dictValue}}</td>
 									{% endfor %}
-								{% else %}
-									{% for key, value in bookingList.items() %}
-									<td>{{value}}</td>
-									{% endfor %}
-								{% endif %}
-							</tr>
+									<td><button type="button" value="Modify" onclick="modifyBooking({{val['id']}})">Modify</button><button type="button" value="Delete" onclick="deleteBooking({{val['id']}})">Delete</button></td>
+								</tr>
+								{% endfor %}
+							{% else %}
+								<tr>
+								{% for key, value in bookingList.items() %}
+								<td>{{value}}</td>
+								{% endfor %}
+								</tr>
+							{% endif %}
 					</table>
 					{% endif %}
                 </div>
