@@ -27,11 +27,12 @@ def findCsvRow(filePath, fieldnames, field, val, iterate=False):
 				dict.update({fieldnames[counter]: item})				# create another entry
 				dict.move_to_end(fieldnames[counter])					# and move to the end as OrderedDict doesn't maintain sorted order after changing the already constructed object
 				counter += 1
-			if dict[field] == val:
-				if iterate:
-					list.append(dict)
-				else:
-					return dict
+			if field in dict:
+				if dict[field] == val:
+					if iterate:
+						list.append(dict)
+					else:
+						return dict
 	# return the list; if no values were found, the list will be empty
 	return list
 
@@ -83,7 +84,7 @@ def writeCsvFile(list, filePath):
 # owner: name of the user who owns the content
 def checkPermissions(owner):
 	if 'username' in session:
-		return session['username'] == owner or session['isAdmin'] == True
+		return owner != 'Anonymous' and (session['username'] == owner or session['isAdmin'] == True)
 	else:
 		return False
 # checks the first element of the two-dimensional list and returns the max value
@@ -139,8 +140,6 @@ def booking():
 					bookingList['status'] = 'request approved'
 				else:
 					bookingList['status'] = 'request denied'
-			print(bookingList)
-			
 	approvedBookings = findCsvRow(bookingPath, fieldNames, 'status', 1, iterate=True)
 	return render_template('booking.html', approvedBookings = approvedBookings, bookingList = bookingList, isList = isList)
 @app.route('/contactus')
