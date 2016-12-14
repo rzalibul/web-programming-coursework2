@@ -1,4 +1,4 @@
-from flask import Flask, render_template, session, redirect, request
+from flask import Flask, abort, render_template, session, redirect, request
 import csv
 import json
 from datetime import date, datetime
@@ -22,17 +22,17 @@ def findCsvRow(filePath, fieldnames, field, val, iterate=False):
 		reader = csv.reader(inFile)
 		for row in reader:
 			counter = 0
+			field_position = 0
 			dict = OrderedDict()
 			for item in row:
 				dict.update({fieldnames[counter]: item})				# create another entry
 				dict.move_to_end(fieldnames[counter])					# and move to the end as OrderedDict doesn't maintain sorted order after changing the already constructed object
 				counter += 1
 			if field in dict:
-				if dict[field] == val:
-					if iterate:
-						list.append(dict)
-					else:
-						return dict
+				if iterate:
+					list.append(dict)
+				else:
+					return dict
 	# return the list; if no values were found, the list will be empty
 	return list
 
@@ -140,7 +140,7 @@ def booking():
 					bookingList['status'] = 'request approved'
 				else:
 					bookingList['status'] = 'request denied'
-	approvedBookings = findCsvRow(bookingPath, fieldNames, 'status', 1, iterate=True)
+	approvedBookings = findCsvRow(bookingPath, fieldNames, 'status', '1', iterate=True)
 	return render_template('booking.html', approvedBookings = approvedBookings, bookingList = bookingList, isList = isList)
 @app.route('/contactus')
 def contactus():
@@ -248,7 +248,7 @@ def estimateBooking():
 	departure = request.args.get('depDate').split('-')
 
 	diff = date(int(departure[0]), int(departure[1]), int(departure[2])) - date(int(arrival[0]), int(arrival[1]), int(arrival[2]))
-	if diff <= 0:
+	if diff.days <= 0:
 		return json.dumps({'status': 'INVALID'})
 	else:
 		estimate = dailyRate * diff.days
@@ -267,11 +267,25 @@ def saveBooking():
     # retrieve fields and wrap them into a list
     arrival = request.form['arrival']
     departure = request.form['departure']
-    date0 = arrival.split('-')
-    date1 = departure.split('-')
-    diff = date(int(date1[0]), int(date1[1]), int(date1[2])) - date(int(date0[0]), int(date0[1]), int(date0[2]))
-    if diff <= 0:
-        return redirect('/booking', code=412)	# 412 Precondition Failed (departure date must be later than arrival)
+    str0 = arrival.split('-')
+    str1 = departure.split('-')
+    arr = date(int(str0[0]), int(str0[1]), int(str0[2]))
+    dep = date(int(str1[0]), int(str1[1]), int(str1[2]))
+    diff = dep - arr
+    for row in bookingsList:
+        if row[10] == '1':					# 10th index = status field, the last one
+            str0 = row[6].split('-')		# arrival date from csv in form of a list
+            str1 = row[7].split('-')		# departure date from csv in form of a list
+            csvDateArr = date(int(str0[0]), int(str0[1]), int(str0[2]))
+            csvDateDep = date(int(str1[0]), int(str1[1]), int(str1[2]))
+            range0 = csvDateDep - arr		# "can't arrive when someone hasn't departed yet"
+            range1 = csvDateArr - dep		# "should depart when someone has an arrival booked"
+            if range0.days <= 0 or range1.days <= 0:
+                #return redirect('/booking', code=412)	# 412 Precondition Failed (dates are unavailable)
+                abort(412)
+    if diff.days < 0:
+        #return redirect('/booking', code=412)	# 412 Precondition Failed (departure date must be later than arrival)
+        abort(412)
     else:
         dailyRate = 60
         price = dailyRate * diff.days
@@ -285,8 +299,7 @@ def saveBooking():
 		
         writeCsvFile(bookingsList, bookingsPath)
 		
-		# send user to the thank you page
-        return redirect('/thankyou')
+        return redirect('/booking')
 
 @app.route('/deleteBooking', methods=['POST'])
 def deleteBooking():
