@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Main page</title>
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/main.css') }}" />
+		<meta charset="utf-8" />
+		<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+	</head>
+	<body>
+		<div id="wrap">
+			<div id="header">
+				{% if session['username'] %}
+				<span> Hello {{session['username']}} </span>
+				<button type="button" value="Logout" onclick="logout()">Logout</button>
+					{% if session['isAdmin'] == True %}
+						<span>Admin permission granted</span>
+					{% endif %}
+				{% else %}
+				<form id="login" action="/login" method="post" role="form">
+					Username: <input id="username" name="username" type="text" /><br />
+					Password: <input id="pwd" name="pwd" type="password" /><br />
+					<input type="submit" value="Login" /><br />				
+				</form>
+				{% endif %}
+			</div>
+			<div id="mainNav">
+				<a class="mainNavLink" href="index">Main Page</a>
+				<a class="mainNavLink" href="gallery">Gallery</a>
+				<a class="mainNavLink" href="attractions">Local Activities</a>
+				<a class="mainNavLink" href="reviews">Reviews</a>
+				<a class="mainNavLink" href="booking">Book Now</a>
+				<a class="mainNavLink" href="contactus">Contact Us</a>
+			</div>
+			<div id="main">
+				<div id="sideNav">
+					<a class="sideNavLink" href="#intro">Introduction</a>
+					<a class="sideNavLink" href="#desc">Description</a>
+					<a class="sideNavLink" href="#facilities">Facilities</a>
+					<a class="sideNavLink" href="#queries">Queries</a>
+				</div>
+				<div id="contentWrap">
+					<h2 id="intro">Welcome!</h2>
+						<img class="introImg" src="{{ url_for('static', filename='img/11.jpg') }}" alt="Image 11" />
+					<h2 id="desc">Description</h2>
+					<p class="mainText">
+						Nestled within a tranquil woodland setting. This 19th-century Italianate courtyard conversion, with substantial coach house, designed by Buckingham Palace architect Edward Blore, offers a unique holiday experience with its superb indoor heated swimming pool. These four award-winning properties are perfectly placed for exploring the abundant delights of Norfolk.
+					</p>
+					<p class="mainText">
+						The Coach House and its adjoining courtyard buildings are the only surviving testimony to this once prestigious hall. Built in 1840, the Clock Tower entrance (with working clocks similar to that of the Palace) is thought to be the only other example of its kind. With four-poster beds and marble-top dining tables, the properties are tastefully furnished and equipped to a high standard. The properties enjoy superb leisure facilities, including a 30-foot indoor heated swimming pool with full changing facilities, shower and W.C., an indoor games room with table tennis, pool table and a children’s play area. The Coach House, along with the three holiday cottages, are equally suitable for larger groups of up to 27 people, making them ideal for special celebrations and family get-togethers.
+					</p>
+					<h2 id="facilities">Facilities</h2>
+						<!-- appropriated code and content from: http://www.cottages.com/cottages/haveringland-hall-the-smithy-cem -->
+						<ul>
+							<li>
+								<em>Full oil central heating £40 (Winter £60) per week poa </em>
+							</li>
+							<li>
+								<em><strong>Ground floor facilities</strong></em>
+							</li>
+						</ul>
+						<ul>
+							<li><em>Electricity and bed linen included </em></li>
+							<li><em>Towels £2 per person per week by arrangement poa</em></li>
+							<li><em>Cot</em></li>
+							<li><em>High chair</em></li>
+							<li><em>Digital TV</em></li>
+							<li><em>DVD (small library)</em></li>
+							<li><em>Radio/CD</em></li>
+							<li><em>Microwave</em></li>
+							<li><em>Shared laundry room with coin-operated washer/dryer</em></li>
+							<li><em>Dishwasher</em></li>
+							<li><em>Fridge/freezer</em></li>
+							<li><em>Shared payphone</em></li>
+							<li><em>Garden with furniture</em></li>
+							<li><em>Large shared garden</em></li>
+							<li><em>Barbecue</em></li>
+							<li><em>Ample parking</em></li>
+							<li><em>Fishing available nearby by arrangement</em></li>
+							<li><em>Natural spring water supply</em></li>
+							<li><em>Complimentary wine on arrival</em></li>
+							<li><em>No smoking</em></li>
+						</ul>
+						<img class="introImg" src="{{ url_for('static', filename='img/17.jpg') }}" alt="Image 17" />
+						Additional facilities (available all year round):
+						<ul>	
+							<li><em>Indoor heated swimming pool (30ft x 14ft, constant depth 4ft), with full changing facilities, shower and toilet, open daily from 9am–7pm</em></li>
+							<li><em>Indoor games room with pool table and table football</em></li>
+							<li><em>Climbing frame and swings (for under 5s)</em></li>
+						</ul>
+						<!-- end of appropriated code -->
+					<h2 id="queries">Queries</h2>
+					<p class="mainText">
+						If you have any queries, please do not hesitate to <a href="contactus.html">contact us</a>.
+					</p>
+				</div>
+			</div>
+			<div id="footer">
+				<p id="footnote">Created by Adrian Wesolowski. Last modified on 12/11/2016.</p>
+			</div>
+		</div>
+		<script src="{{ url_for('static', filename='script.js') }}"></script>
+		<!-- script is loaded after the elements are completely loaded in order to make sure event handlers are properly attached -->
+	</body>
+</html>

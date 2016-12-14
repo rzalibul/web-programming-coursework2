@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Reviews</title>
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/main.css') }}" />
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/reviews.css') }}" />
+		<meta charset="utf-8" />
+		<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+	</head>
+	<body onLoad="fetchComments()">
+		<div id="wrap">
+			<div id="header">
+				{% if session['username'] %}
+				<span> Hello {{session['username']}} </span>
+				<button type="button" value="Logout" onclick="logout()">Logout</button>
+				{% else %}
+				<form id="login" action="/login" method="post" role="form">
+					Username: <input id="username" name="username" type="text" /><br />
+					Password: <input id="pwd" name="pwd" type="password" /><br />
+					<input type="submit" value="Login" /><br />				
+				</form>
+				{% endif %}
+			</div>
+			<div id="mainNav">
+				<a class="mainNavLink" href="index">Main Page</a>
+				<a class="mainNavLink" href="gallery">Gallery</a>
+				<a class="mainNavLink" href="attractions">Local Activities</a>
+				<a class="mainNavLink" href="reviews">Reviews</a>
+				<a class="mainNavLink" href="booking">Book Now</a>
+				<a class="mainNavLink" href="contactus">Contact Us</a>
+			</div>
+			<div id="main">
+				<div id="sideNav">
+					<a class="sideNavLink" onClick="saveComment()">Save comment</a>
+					<a class="sideNavLink" onClick="clearComment()">Clear comment</a>
+				</div>
+				<div id="contentWrap">
+					<div id="commentWrap">
+						<h2>Reviews and comments</h2>
+						<div id="commentList">
+							<!--
+								here will appear JavaScript-loaded comments from Python data
+							-->
+						</div>
+						<div class="commentArea">
+							<form id="newCmt" class="reviewForm" action="/saveComment" method="post" role="form">
+								<h2>Your review or comment</h2>
+								{% if not(session['username']) %}
+								Your name: <input class="nameBox" name="author" type="text" maxlength="32" size="20" value="Anonymous" readonly /><br />
+								{% else %}
+								Your name: <input class="nameBox" name="author" type="text" maxlength="32" size="20" value={{session['username']}} readonly /><br />
+								{% endif %}
+								Your comment: <textarea class="commentBox" name="comment" placeholder="Enter your comment..."></textarea><br />
+								Your rating (if applicable): 
+								<div class="rating">
+									<span class="stars">&#9734;</span>
+									<span class="stars">&#9734;</span>
+									<span class="stars">&#9734;</span>
+									<span class="stars">&#9734;</span>
+									<span class="stars">&#9734;</span>
+								</div>
+								<input class="hiddenRating" name="rating" type="number" hidden />
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="footer">
+				<p id="footnote">Created by Adrian Wesolowski. Last modified on 12/11/2016.</p>
+			</div>
+		</div>
+		<script src="{{ url_for('static', filename='script.js') }}"></script>
+	</body>
+</html>

@@ -1,0 +1,153 @@
+/* gallery specific */
+div#galleryWrap
+{
+	/* position: relative; */
+	top: 25vh;
+	width: 50vw;
+	height: auto;
+	margin: auto;
+	margin-top: 10vh;
+	/* padding adjustments to ensure same distances between thumbnails */
+	padding-top: 1vh;
+	padding-bottom: 2vh;
+	/* prevent selecting images and buttons inside the wrap */
+	/* source: http://stackoverflow.com/questions/826782/how-to-disable-text-selection-highlighting-using-css/8099186#8099186 */
+	-webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    -ms-user-select: none;
+}
+div#mainImg
+{
+	flex-direction: row;
+	width: 590px;
+	height: auto;
+	margin: auto;
+}
+div#slides
+{
+	display: block;
+	position: absolute;
+	top: -2vh;
+	left: 3vw;
+	height: calc(160px * 5 + 15px); /* 5 = amount of images in the slidebar; 160px is height of thumbnail and 15px is the total of vertical borders */
+	width: 207px;
+	margin-bottom: -3px;
+	/* prevent selecting images and buttons inside the wrap */
+	/* source: http://stackoverflow.com/questions/826782/how-to-disable-text-selection-highlighting-using-css/8099186#8099186 */
+	-webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    -ms-user-select: none;
+	overflow: hidden;	/* prevent thumbnails from being seen outside of this container */
+}
+img.thumbnail
+{
+	position: relative;
+	top: -3vh;
+	width: 202px;
+	height: 160px;
+	border: 3px solid black;
+	border-top: 1px solid black;
+	margin-left: -1px;
+	margin-top: -5px;
+}			
+						
+img.thumbnail:hover
+{
+	cursor: pointer;
+}
+img.thumbnail:first-of-type
+{
+	border-top: 3px solid black;	/* add the remaining top border that was cut off in all other thumbnails */
+}
+
+img#fullSize
+{
+	width: 500px;
+	height: 400px;
+	cursor: pointer;
+}
+.fullScreen
+{
+	background-color: black;
+	position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-width: 100%;
+    max-height: 100%;
+    margin: auto;
+    overflow: auto;
+	/* make it full screen */
+	opacity: 0.90;
+	z-index: 2;
+}
+.bigImage
+{
+	position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    overflow: auto;
+	max-width: 80vw;
+	max-height: 80vh;
+	z-index: 3;
+}
+div.imgNav
+{
+	width: 45px;
+	height: 400px;
+	background-color: black;
+	color: #ffffff;
+	text-align: center;
+	font-size: 36pt;
+	opacity: 0.5;
+	cursor: pointer;
+	position: relative;
+}
+div.imgSlideNav
+{
+	padding: 0;
+	max-width: 202px;
+	height: 32px;
+	background-color: black;
+	color: #ffffff;
+	text-align: center;
+	font-size: 18pt;
+	opacity: 0.5;
+	cursor: pointer;
+	position: relative;
+	z-index: 2;
+	padding-right: 2px;
+	word-wrap: nowrap;
+}
+div.imgNav:hover
+{
+	opacity: 0.8;
+}
+div.imgSlideNav:hover
+{
+	opacity: 0.8;
+}
+div#prevImg
+{
+	left: 45px;			/* push by width of this div which is inherited from imgNav class */
+}
+div#nextImg
+{
+	right: 45px;		/* push by width of this div which is inherited from imgNav class */
+}
+div#prevSlidebarImg
+{
+	top: 0;				/* for the sake of clarity; it's the first element in div#slides anyway */
+}
+div#nextSlidebarImg
+{
+	bottom: 64px;
+}
