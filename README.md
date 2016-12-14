@@ -5,7 +5,7 @@ Core features:
 --------------
 - each page must be rendered as a template in Flask (done!)
 - comments functionality must be done on server-side (saved as lists; use CSV format I guess) - done, independent testing required
-- booking facility for property (saved as lists; use CSV format I guess)
+- booking facility for property (saved as lists; use CSV format I guess) - done, testing required
 
 Advanced features (but it would be nice to implement them):
 --------------
@@ -17,7 +17,7 @@ Advanced features (but it would be nice to implement them):
 - user authentication (work in progress; register page needs to be done)
 - password protection (hashing with salt)
 - admin level authentication and admin panel (admin auth done; admin panel needs to be done)
-- modifying bookings (use Ajax)
-- deleting bookings (use Ajax)
+- modifying bookings (might be difficult and counterproductive)
+- deleting bookings (done)
 - different costs of bookings depending on variables
 - possibly more
