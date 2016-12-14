@@ -1,8 +1,16 @@
-table#bookings
+table#userBookings
+{
+	border: 1px solid black;
+}
+table#allBookings
 {
 	
 }
 form.bookingEntry
+{
+	
+}
+span#estimate
 {
 	
 }
