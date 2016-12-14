@@ -141,6 +141,7 @@ def booking():
 			print(bookingList)
 			return render_template('booking.html', bookingList = bookingList, isList = False)
 	return render_template('booking.html')
+
 @app.route('/contactus')
 def contactus():
 	return render_template('contactus.html')
@@ -148,6 +149,10 @@ def contactus():
 @app.route('/gallery')
 def gallery():
 	return render_template('gallery.html')
+
+@app.route('/thankyou')
+def thankyou():
+	return render_template('thankyou.html')   
 
 # review page specific
 @app.route('/saveComment', methods=['POST'])
@@ -234,11 +239,7 @@ def login():
 @app.route('/logout', methods=['GET'])
 def logout():
 	session.clear()
-	return redirect('/', code=200)		# send 200 OK response
-	
-@app.route('/thankyou')
-def thankyou():
-	return render_template('thankyou.html')    
+	return redirect('/', code=200)		# send 200 OK response 
 
 @app.route('/saveBooking', methods=['POST'])
 def saveBooking():
