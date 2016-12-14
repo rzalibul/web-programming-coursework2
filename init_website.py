@@ -1,7 +1,7 @@
 from flask import Flask, render_template, session, redirect, request
 import csv
 import json
-from datetime import datetime
+from datetime import date, datetime
 from collections import OrderedDict
 
 # simple CSV reading
@@ -27,11 +27,12 @@ def findCsvRow(filePath, fieldnames, field, val, iterate=False):
 				dict.update({fieldnames[counter]: item})				# create another entry
 				dict.move_to_end(fieldnames[counter])					# and move to the end as OrderedDict doesn't maintain sorted order after changing the already constructed object
 				counter += 1
-			if dict[field] == val:
-				if iterate:
-					list.append(dict)
-				else:
-					return dict
+			if field in dict:
+				if dict[field] == val:
+					if iterate:
+						list.append(dict)
+					else:
+						return dict
 	# return the list; if no values were found, the list will be empty
 	return list
 
@@ -83,7 +84,7 @@ def writeCsvFile(list, filePath):
 # owner: name of the user who owns the content
 def checkPermissions(owner):
 	if 'username' in session:
-		return session['username'] == owner or session['isAdmin'] == True
+		return owner != 'Anonymous' and (session['username'] == owner or session['isAdmin'] == True)
 	else:
 		return False
 # checks the first element of the two-dimensional list and returns the max value
@@ -112,10 +113,12 @@ def reviews():
 
 @app.route('/booking')
 def booking():
+	approvedBookings = []
 	bookingList = []
+	bookingPath = "static\\booking.csv"
+	fieldNames = ['id', 'name', 'firstName', 'lastName', 'email', 'telNum', 'arrivalDate', 'departureDate', 'submitDate', 'price', 'status']
+	isList = False
 	if 'username' in session:
-		bookingPath = "static\\booking.csv"
-		fieldNames = ['id', 'name', 'firstName', 'lastName', 'email', 'telNum', 'arrivalDate', 'departureDate', 'submitDate', 'status']
 		bookingList = findCsvRow(bookingPath, fieldNames, 'name', session['username'], iterate=True)
 		# check whether the bookingList is a list or a dictionary (first would imply more than one row, the second - just one row)
 		if isinstance(bookingList, list):
@@ -128,8 +131,7 @@ def booking():
 							dict[key] = 'request approved'
 						else:
 							dict[key] = 'request denied'
-			print(bookingList)
-			return render_template('booking.html', bookingList = bookingList, isList = True)
+			isList = True
 		else:
 			if 'status' in bookingList:
 				if int(bookingList['status']) == 0:
@@ -138,10 +140,8 @@ def booking():
 					bookingList['status'] = 'request approved'
 				else:
 					bookingList['status'] = 'request denied'
-			print(bookingList)
-			return render_template('booking.html', bookingList = bookingList, isList = False)
-	return render_template('booking.html')
-
+	approvedBookings = findCsvRow(bookingPath, fieldNames, 'status', 1, iterate=True)
+	return render_template('booking.html', approvedBookings = approvedBookings, bookingList = bookingList, isList = isList)
 @app.route('/contactus')
 def contactus():
 	return render_template('contactus.html')
@@ -149,10 +149,6 @@ def contactus():
 @app.route('/gallery')
 def gallery():
 	return render_template('gallery.html')
-
-@app.route('/thankyou')
-def thankyou():
-	return render_template('thankyou.html')   
 
 # review page specific
 @app.route('/saveComment', methods=['POST'])
@@ -239,8 +235,25 @@ def login():
 @app.route('/logout', methods=['GET'])
 def logout():
 	session.clear()
-	return redirect('/', code=200)		# send 200 OK response 
+	return redirect('/', code=200)		# send 200 OK response
+	
+@app.route('/thankyou')
+def thankyou():
+	return render_template('thankyou.html')    
 
+@app.route('/estimateBooking', methods=['GET'])
+def estimateBooking():
+	dailyRate = 60
+	arrival = request.args.get('arrDate').split('-')
+	departure = request.args.get('depDate').split('-')
+
+	diff = date(int(departure[0]), int(departure[1]), int(departure[2])) - date(int(arrival[0]), int(arrival[1]), int(arrival[2]))
+	if diff <= 0:
+		return json.dumps({'status': 'INVALID'})
+	else:
+		estimate = dailyRate * diff.days
+		return json.dumps({'status': 'OK', 'estimate': estimate})
+	
 @app.route('/saveBooking', methods=['POST'])
 def saveBooking():
     bookingsPath = "static\\booking.csv"
@@ -252,22 +265,33 @@ def saveBooking():
         name = "Anonymous"
     submitDate = datetime.utcnow().strftime("%d %b %Y %H:%M:%S")
     # retrieve fields and wrap them into a list
-    newEntry = [id, name, request.form['firstname'], request.form['lastname'], request.form['email'], request.form['tel'], request.form['arrival'], request.form['departure'], submitDate, 0]
-	# last element signals booking status
-	# 0 = waiting for approval
-	# 1 = approved
-	# any other value = booking denied
-    bookingsList.append(newEntry)
-	
-    writeCsvFile(bookingsList, bookingsPath)
-    
-    # send user to the thank you page
-    return redirect('/thankyou')
+    arrival = request.form['arrival']
+    departure = request.form['departure']
+    date0 = arrival.split('-')
+    date1 = departure.split('-')
+    diff = date(int(date1[0]), int(date1[1]), int(date1[2])) - date(int(date0[0]), int(date0[1]), int(date0[2]))
+    if diff <= 0:
+        return redirect('/booking', code=412)	# 412 Precondition Failed (departure date must be later than arrival)
+    else:
+        dailyRate = 60
+        price = dailyRate * diff.days
+        newEntry = [id, name, request.form['firstname'], request.form['lastname'], request.form['email'], request.form['tel'], arrival, departure, submitDate, price, 0]
+		# last element signals booking status
+		# 0 = waiting for approval
+		# 1 = approved
+		# any other value = booking denied
+		
+        bookingsList.append(newEntry)
+		
+        writeCsvFile(bookingsList, bookingsPath)
+		
+		# send user to the thank you page
+        return redirect('/thankyou')
 
 @app.route('/deleteBooking', methods=['POST'])
 def deleteBooking():
 	bookingsPath = "static\\booking.csv"
-	fieldNames = ['id', 'name', 'firstName', 'lastName', 'email', 'telNum', 'arrivalDate', 'departureDate', 'submitDate', 'status']
+	fieldNames = ['id', 'name', 'firstName', 'lastName', 'email', 'telNum', 'arrivalDate', 'departureDate', 'submitDate', 'price', 'status']
 	id = request.form['booking_id']
 	row = findCsvRow(bookingsPath, fieldNames, 'id', id)
 	if checkPermissions(row['author']) == True:
