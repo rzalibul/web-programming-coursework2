@@ -93,7 +93,8 @@ function saveComment()
 					curRating = curRating.replace('class="starSelected"', '');
 				}
 				var prevComments = $('#commentList').html();
-				var curComment = '<div id="cmt_' + cmtList.id + '"><span class="cmtName">' + cmtList.author + ' says:' + '</span><p class="comment">' + cmtList.comment + '</p>' + 'Rating:' + curRating + '<span class="date">' + cmtList.date + '</span><button class="cmtBtn" value="Modify" onclick="modifyComment(' + cmtList.id + ')">Modify</button><button class="cmtBtn" value="Delete" onclick="deleteComment(' + cmtList.id + ')">Delete</button></div>' + prevComments;
+				/*var curComment = '<div id="cmt_' + cmtList.id + '"><span class="cmtName">' + cmtList.author + ' says:' + '</span><p class="comment">' + cmtList.comment + '</p>' + 'Rating:' + curRating + '<span class="date">' + cmtList.date + '</span><button class="cmtBtn" value="Modify" onclick="modifyComment(' + cmtList.id + ')">Modify</button><button class="cmtBtn" value="Delete" onclick="deleteComment(' + cmtList.id + ')">Delete</button></div>' + prevComments;*/
+                var curComment = 
 				// to do: buttons are only visible if user is in session
 				$('#commentList').empty();
 				$('#commentList').append(curComment);
@@ -326,7 +327,7 @@ function changeSlidebar(imgList, index, reverse)						// if reverse is true, the
 		{
 			for(var j = 0; j < 5; j++)
 			{
-				$("div#prevSlidebarImg").after("<img class='thumbnail' src='static/img/" + imgList[index - j] + "' alt='Image " + (index - j + 1) + "' longdesc='" + (index - j) + "' />");
+				$("div#prevSlidebarImg").after("<img class='thumbnail img-responsive' src='static/img/" + imgList[index - j] + "' alt='Image " + (index - j + 1) + "' longdesc='" + (index - j) + "' />");
 				// subsequently append slidebar images
 			}
 			$("img.thumbnail").css("top", "-810px");		

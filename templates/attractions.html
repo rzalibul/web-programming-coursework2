@@ -2,81 +2,123 @@
 <html lang="en">
 	<head>
 		<title>Attractions</title>
-		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/main.css') }}" />
-		<meta charset="utf-8" />
-		<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+        <meta charset="utf-8" />
+        
+        <!-- Latest compiled and minified Bootstrap CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+		<!-- Bootstrap theme -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+		<!-- stylesheet.css -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles/stylesheet.css') }}">
+        <!-- JQuery -->
+        <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+        <!-- Latest compiled and minified JavaScript -->
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 	</head>
 	<body>
-		<div id="wrap">
-			<div id="header">
-				{% if session['username'] %}
-				<span> Hello {{session['username']}} </span>
-				<button type="button" value="Logout" onclick="logout()">Logout</button>
-				{% else %}
-				<form id="login" action="/login" method="post" role="form">
-					Username: <input id="username" name="username" type="text" /><br />
-					Password: <input id="pwd" name="pwd" type="password" /><br />
-					<input type="submit" value="Login" /><br />				
-				</form>
-				{% endif %}
-			</div>
-			<div id="mainNav">
-				<a class="mainNavLink" href="index">Main Page</a>
-				<a class="mainNavLink" href="gallery">Gallery</a>
-				<a class="mainNavLink" href="attractions">Local Activities</a>
-				<a class="mainNavLink" href="reviews">Reviews</a>
-				<a class="mainNavLink" href="booking">Book Now</a>
-				<a class="mainNavLink" href="contactus">Contact Us</a>
-			</div>
-			<div id="main">
-				<div id="sideNav">
-					<a class="sideNavLink" href="#intro">Introduction</a>
-					<a class="sideNavLink" href="#pointsOfInterest">Points of Interest</a>
-					<a class="sideNavLink" href="#shops">Shops</a>
-					<a class="sideNavLink" href="#dining">Dining</a>
-					<a class="sideNavLink" href="#other">Other Activities</a>
+		<!-- Navigation Bar -->
+		<nav class="navbar navbar-inverse">
+			<div class="container-fluid">
+				<!-- Header of Navbar -->
+				<div class="navbar-header">
+					<a class="navbar-brand" href="index">
+						<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
+					</a>
 				</div>
-				<div id="contentWrap">
-					<h2 id="intro">Getting around</h2>
-					<p class="mainText">
-						Located at the epicentre of Norfolk’s finest attractions, guests at Haveringland Hall will find themselves only a short drive away from fine golf at Weston Park and Barnham Broom, and walking and cycling paths such as The Marriots Way, The Bure Valley and Weavers Way. There is easy touring to the North Norfolk Coast, with Holt and Burnham Market (known as the Hamptons of Norfolk) just 12 miles, with delicatessen and excellent shopping, first class pubs and restaurants. Cromer (possibly most famous for its crabs), Sheringham and Caister all offering sandy beaches. Within a 30-minute drive are the Norfolk Broads at Wroxham, where visitors can hire boats for the day, or alternatively enjoy a leisurely day cruise. The nature reserve of Hickling Broad is a haven for migrating birds, including sandpipers, osprey and spoonbills; it also offers excellent fishing, especially for pike and bream, as well as a number of nature trails to explore.
+				
+				<!-- Right of Navbar -->
+				<div class="collapse navbar-collapse">
+
+					<!-- Handle signed in/signed out user -->
+					{% if session['username'] %}
+					<button type="button" class="btn btn-default navbar-btn navbar-right" onclick="logout()">Logout</button>
+					<p class="navbar-text navbar-right">
+						Logged in as {{session['username']}}
+							{% if session['isAdmin'] == True %}
+								(Admin)
+							{% endif %}
 					</p>
-					<h2 id="pointsOfInterest">Points of interest</h2>
-					<p class="intro">
-					</p>
-					<p class="mainText">
-						Full of cultural attractions, the city of Norwich lies just 20 minutes away, offering interests to suit all tastes; from history and architecture to art galleries, shops and leisure activities. The splendid cathedral boasts some of Britain’s finest Gothic architecture with carvings adorning its interior, while high on a hill stands the 12th-century Norman castle, which now houses the Castle Museum. Within driving distance are Somerleyton Hall and the NT properties of 17th-century Blickling Hall (where open-air concerts are staged in summer), Felbrigg Hall, Oxburgh Hall and Sheringham Park. For family entertainment, there is a wealth of adventure activities and parks nearby – choose from Dinosaur Adventure Park, Thigby Wildlife, Pettitts Animal Adventure and Wroxham Barns, to name but a few.
-					</p>
-					<p class="mainText">
-						There are regular sightseeing bus tours going on every day in five hour slots. The tour's duration is approximately 45 minutes.
-					</p>
-					<h2 id="shops">Shops</h2>
-					<p class="intro">
-						Norwich is one of the premier shopping cities in the country, with not one but two very different shopping malls located only a few minutes walk from each other which are the <strong>intu Chapelfield Shopping Centre</strong> and the <strong>Castle Mall</strong>. Situated within the main shopping area of the city centre, it's easy to wander in and explore the shops, restaurants and cinema as part of your shopping trip. 
-					</p>
-					<p class="mainText">
-						intu Chapelfield is a fresh, contemporary shopping centre in the heart of East Anglia’s vibrant and thriving capital. With over 90 shops, cafes and restaurants and the only House of Fraser in the region, intu Chapelfield is much more than just another shopping centre. It is a place to shop, a place to dine, and a place to meet. Most of all it is a place to enjoy.
-					</p>
-					<p class="mainText">
-						Located next to Norwich Castle in the heart of the City centre, Castle Mall has five floors of great shopping, ample parking and an eight screen cinema.  Find big name brands such as TK Maxx, New Look and Peacocks as well as Boots, Tiger and Argos. There is also a wide variety of independent stores such as The Tea Junction, Gifted and The Java Store.  Children will be spoilt for choice with The Entertainer and Hawkin’s Bazaar. For entertainment take the family to watch the latest film at Vue Cinema with free parking for up to 4 hours.
-					</p>
-					<p class="mainText">
-						Castle Mall is open every day with late night shopping on a Thursday until 8pm. Parking is easy with two car parks totalling 800 spaces, the main car park is located at the top of Rose lane and the second, smaller car park on Farmer’s Avenue.
-					</p>
-					<h2 id="dining">Dining</h2>
-					<p class="mainText">
-						Norwich has multitude of restaurants and other places to eat. They are also widely varied, meaning finding a restaurant with Indian, Japanese or Thai cuisine is no feat at all. Full list can be found <a href="http://www.visitnorwich.co.uk/eat-and-drink/restaurants/">here</a>.
-					</p>
-					<h2 id="other">Other activities</h2>
-					<p class="mainText">
-						There is no shortage of possible activities in Norwich and this includes but is not limited to:	bars, pubs, evening entertainment of any sort, musea or other cultural heritage points of interests. More information about Norwich can be found <a href="http://www.visitnorwich.co.uk/">here</a>.
-					</p>
+					{% else %}
+					<button type="button" class="btn btn-default navbar-btn navbar-right" data-toggle="modal" data-target="#loginBox">Login</button>	
+					{% endif %}
+					<!-- Navigation buttons -->
+					<ul class="nav navbar-nav navbar-right">
+						<li><a href="index">Home</a></li>
+						<li><a href="gallery">Gallery</a></li>
+						<li class="active"><a href="attractions">Attractions</a></li>
+						<li><a href="reviews">Reviews</a></li>
+						<li><a href="booking">Book Now</a></li>
+						<li><a href="contactus">Contact</a></li>
+					</ul>
+				
 				</div>
 			</div>
-			<div id="footer">
-				<p id="footnote">Created by Adrian Wesolowski. Last modified on 12/11/2016.</p>
+		</nav>
+
+		<!-- Modal login box -->
+		<div id="loginBox" class="modal fade" role="dialog">
+			<div class="modal-dialog modal-sm">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h4 class="modal-title">Login</h4>
+					</div>
+					<div class="modal-body">
+						<form id="login" action="/login" method="post">
+							<input type="text" id="username" name="username" class="form-control" placeholder="Username"><br>
+							<input type="password" id="pwd" name="pwd" class="form-control" placeholder="Password"><br>
+							<button type="submit" class="btn btn-default btn-lg">Login</button>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
 			</div>
 		</div>
+        
+        <!-- Main content -->
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1>Getting Around</h1>
+                    <p>Located at the epicentre of Norfolk’s finest attractions, guests at Haveringland Hall will find themselves only a short drive away from fine golf at Weston Park and Barnham Broom, and walking and cycling paths such as The Marriots Way, The Bure Valley and Weavers Way. There is easy touring to the North Norfolk Coast, with Holt and Burnham Market (known as the Hamptons of Norfolk) just 12 miles, with delicatessen and excellent shopping, first class pubs and restaurants. Cromer (possibly most famous for its crabs), Sheringham and Caister all offering sandy beaches. Within a 30-minute drive are the Norfolk Broads at Wroxham, where visitors can hire boats for the day, or alternatively enjoy a leisurely day cruise. The nature reserve of Hickling Broad is a haven for migrating birds, including sandpipers, osprey and spoonbills; it also offers excellent fishing, especially for pike and bream, as well as a number of nature trails to explore.</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <h1>Shops</h1>
+                    <p>Norwich is one of the premier shopping cities in the country, with not one but two very different shopping malls located only a few minutes walk from each other which are the <strong>intu Chapelfield Shopping Centre</strong> and the <strong>Castle Mall</strong>. Situated within the main shopping area of the city centre, it's easy to wander in and explore the shops, restaurants and cinema as part of your shopping trip.</p>
+                    <p>intu Chapelfield is a fresh, contemporary shopping centre in the heart of East Anglia’s vibrant and thriving capital. With over 90 shops, cafes and restaurants and the only House of Fraser in the region, intu Chapelfield is much more than just another shopping centre. It is a place to shop, a place to dine, and a place to meet. Most of all it is a place to enjoy.</p>
+                    <p>Located next to Norwich Castle in the heart of the City centre, Castle Mall has five floors of great shopping, ample parking and an eight screen cinema.  Find big name brands such as TK Maxx, New Look and Peacocks as well as Boots, Tiger and Argos. There is also a wide variety of independent stores such as The Tea Junction, Gifted and The Java Store.  Children will be spoilt for choice with The Entertainer and Hawkin’s Bazaar. For entertainment take the family to watch the latest film at Vue Cinema with free parking for up to 4 hours.</p>
+                    <p>Castle Mall is open every day with late night shopping on a Thursday until 8pm. Parking is easy with two car parks totalling 800 spaces, the main car park is located at the top of Rose lane and the second, smaller car park on Farmer’s Avenue.</p>
+                </div>
+                <div class="col-md-6">
+                    <h1>Points of interest</h1>
+                    <p>Full of cultural attractions, the city of Norwich lies just 20 minutes away, offering interests to suit all tastes; from history and architecture to art galleries, shops and leisure activities. The splendid cathedral boasts some of Britain’s finest Gothic architecture with carvings adorning its interior, while high on a hill stands the 12th-century Norman castle, which now houses the Castle Museum. Within driving distance are Somerleyton Hall and the NT properties of 17th-century Blickling Hall (where open-air concerts are staged in summer), Felbrigg Hall, Oxburgh Hall and Sheringham Park. For family entertainment, there is a wealth of adventure activities and parks nearby – choose from Dinosaur Adventure Park, Thigby Wildlife, Pettitts Animal Adventure and Wroxham Barns, to name but a few.</p>
+                    <p>There are regular sightseeing bus tours going on every day in five hour slots. The tour's duration is approximately 45 minutes.</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <h1>Dining</h1>
+                    <p>Norwich has multitude of restaurants and other places to eat. They are also widely varied, meaning finding a restaurant with Indian, Japanese or Thai cuisine is no feat at all. Full list can be found <a href="http://www.visitnorwich.co.uk/eat-and-drink/restaurants/">here</a>.</p>
+                </div>
+                <div class="col-md-6">
+                    <h1>Other activities</h1>
+                    <p>There is no shortage of possible activities in Norwich and this includes but is not limited to:	bars, pubs, evening entertainment of any sort, musea or other cultural heritage points of interests. More information about Norwich can be found <a href="http://www.visitnorwich.co.uk/">here</a>.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="container">
+            <footer class="footer">
+                <div class="container text-center">
+                    <p class="text-muted">Created by Adrian Wesolowski. Last modified on 12/14/2016.</p>
+                </div>
+            </footer>
+        </div>
 		<script src="{{ url_for('static', filename='script.js') }}"></script>
 	</body>
 </html>
