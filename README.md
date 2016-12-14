@@ -5,7 +5,7 @@ Core features:
 --------------
 - each page must be rendered as a template in Flask (done!)
 - comments functionality must be done on server-side (saved as lists; use CSV format I guess) - done, independent testing required
-- booking facility for property (saved as lists; use CSV format I guess) - work in progress; needs to display availability
+- booking facility for property (saved as lists; use CSV format I guess) - done (hopefully...)
 
 Advanced features (but it would be nice to implement them):
 --------------
