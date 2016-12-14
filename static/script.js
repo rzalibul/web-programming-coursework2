@@ -263,6 +263,46 @@ $('span.stars').click				// selects a particular rating on click
 );
 
 /* booking functionality */
+
+function estimateBooking(event)
+{
+	event.preventDefault();								// stop the form from automatic submission
+	if ($('form.bookingEntry > span#estimate').length)	// check whether the span element is present in the form
+	{
+		$.ajax
+		(
+			{
+				url: '/estimateBooking',
+				data: 'arrDate=' + $('input[name="arrival"]').val() + '&depDate=' + $('input[name="departure"]').val(),
+				type: 'GET',
+				success: function(response)
+				{
+					var bookingStatus = JSON.parse(response);
+					if(bookingStatus.status == "OK")
+					{
+						$('form.bookingEntry > input[type="submit"]').attr('value', 'Submit');
+						$('form.bookingEntry').append("<span id='estimate'>Current estimate = £" + bookingStatus.estimate + "</span>");
+					}
+					else
+					{
+						console.log(response);
+					}
+				},
+				error: function(response)
+				{
+					console.log(response);
+				}
+			}
+		);
+
+		return false;
+	}
+	else
+	{
+		return true;
+	}
+}
+
 function modifyBooking(id)
 {
 	
