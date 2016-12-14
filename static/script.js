@@ -266,9 +266,9 @@ $('span.stars').click				// selects a particular rating on click
 
 function estimateBooking(event)
 {
-	event.preventDefault();								// stop the form from automatic submission
-	if ($('form.bookingEntry > span#estimate').length)	// check whether the span element is present in the form
+	if (!$('form.bookingEntry > span#estimate').length)	// check whether the span element is present in the form
 	{
+		event.preventDefault();								// stop the form from automatic submission
 		$.ajax
 		(
 			{
