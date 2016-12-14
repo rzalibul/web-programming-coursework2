@@ -237,6 +237,10 @@ def logout():
 	session.clear()
 	return redirect('/', code=200)		# send 200 OK response
 	
+@app.route('/thankyou')
+def thankyou():
+	return render_template('thankyou.html')    
+
 @app.route('/estimateBooking', methods=['GET'])
 def estimateBooking():
 	dailyRate = 60
@@ -278,8 +282,11 @@ def saveBooking():
 		# any other value = booking denied
 		
         bookingsList.append(newEntry)
+		
         writeCsvFile(bookingsList, bookingsPath)
-        return redirect('/booking')
+		
+		# send user to the thank you page
+        return redirect('/thankyou')
 
 @app.route('/deleteBooking', methods=['POST'])
 def deleteBooking():

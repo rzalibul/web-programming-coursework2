@@ -1,41 +1,7 @@
-/* review/comment page specific */
-div#commentWrap
-{
-	
-}
-div#commentList
-{
-	
-}
-div.commentArea
-{
-}
-form.reviewForm
-{
-	display: flex;
-	flex-direction: column;
-	align-items: flex-start;
-}
-
-input.nameBox
-{
-	font-family: Arial;
-	width: 30em;
-}
-input.hiddenRating
-{
-}
-textarea.commentBox
-{
-	font-family: Arial;
-	resize: none;
-	width: 60vw;
-	max-width: 60vw;
-	min-height: 10vh;
-}
 /* rating styling; source: https://css-tricks.com/star-ratings/ */
 div.rating
 {
+	display: flex;
 	flex-direction: row;
 	align-items: flex-end;
 	justify-content: flex-end;
@@ -60,18 +26,4 @@ div.rating > span.starSelected ~ span:before
    content: "\2605";
    position: absolute;
    /* change the star from the hollow one to filled one on hover */
-}
-
-p.comment
-{
-	font-style: italic;
-	margin-top: 3vh;
-}
-span.cmtName
-{
-	margin-top: 2vh;
-}
-span.date
-{
-	margin-top: 2vh;
 }
