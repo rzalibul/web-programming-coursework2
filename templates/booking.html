@@ -4,8 +4,10 @@
 		<title>Booking</title>
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/main.css') }}" />
 		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/booking.css') }}" />
+<!--		<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css" /> -->
         <meta charset="utf-8" />
 		<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<!--		<script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> -->
 	</head>
 	<body>
 		<div id="wrap">
@@ -35,7 +37,7 @@
 					{% if not(session['username'] and bookingList) %}
                     <p>Please fill in all fields of the form:</p>
                     
-                    <form class="bookingEntry" action="/saveBooking" method="POST">
+                    <form class="bookingEntry" onsubmit="return estimateBooking(event)" action="/saveBooking" method="POST">
                         First Name:<br />
                         <input type="text" name="firstname" placeholder="First Name" /><br />
                         Last Name:<br />
@@ -48,12 +50,26 @@
                         <input type="date" name="arrival" /><br />
                         Departure Date<br />
                         <input type="date" name="departure" /><br />
-			            <input type="submit" value="Submit" /><br />
+			            <input type="submit" value="Check Estimate" /><br />
                     </form>
+					{% if approvedBookings %}
+						<h2 id="desc">Availability</h2>
+						<p>Bookings are not available on listed dates:</p>
+						<table id="allBookings">
+							<tr>
+								<td>Arrival Date</td><td>Departure Date</td>
+							</tr>
+							{% for val in approvedBookings %}
+							<tr id="approvedBooking_{{val['id']}}">
+								<td>{{val['arrivalDate']}}</td><td>{{val['departureDate']}}</td>
+							</tr>
+							{% endfor %}
+						</table>
+					{% endif %}
 					{% else %}
-					<table id="bookings" border=1>
+					<table id="userBookings">
 						<tr>
-							<td>ID</td><td>Username</td><td>First Name</td><td>Last Name</td><td>Email</td><td>Telephone Number</td><td>Arrival Date</td><td>Departure Date</td><td>Submission Date</td><td>Status</td><td>Action</td>
+							<td>ID</td><td>Username</td><td>First Name</td><td>Last Name</td><td>Email</td><td>Telephone Number</td><td>Arrival Date</td><td>Departure Date</td><td>Submission Date</td><td>Price</td><td>Status</td><td>Action</td>
 						</tr>
 							{% if isList %}
 								{% for val in bookingList %}
@@ -80,5 +96,6 @@
 			</div>
 		</div>
 		<script src="{{ url_for('static', filename='script.js') }}"></script>
+	<!--	<script src="{{ url_for('static', filename='bookings_widget.js') }}"></script> -->
 	</body>
 </html>
