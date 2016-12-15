@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Error 412</title>
+        <meta charset="utf-8" />
+        
+        <!-- Latest compiled and minified Bootstrap CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        
+		<!-- Bootstrap theme -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+        
+		<!-- stylesheet.css -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles/stylesheet.css') }}">
+        
+        <!-- JQuery -->
+        <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+        
+        <!-- Latest compiled and minified JavaScript -->
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        
+	</head>
+	<body>
+
+		<!-- Navigation Bar -->
+		<nav class="navbar navbar-inverse">
+			<div class="container-fluid">
+				<!-- Header of Navbar -->
+				<div class="navbar-header">
+					<a class="navbar-brand" href="index">
+						<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
+					</a>
+				</div>
+				
+				<!-- Right of Navbar -->
+				<div class="collapse navbar-collapse">
+
+					<!-- Handle signed in/signed out user -->
+					{% if session['username'] %}
+					<button type="button" class="btn btn-default navbar-btn navbar-right" onclick="logout()">Logout</button>
+					<p class="navbar-text navbar-right">
+						Logged in as {{session['username']}}
+							{% if session['isAdmin'] == True %}
+								(Admin)
+							{% endif %}
+					</p>
+					{% else %}
+					<button type="button" class="btn btn-default navbar-btn navbar-right" data-toggle="modal" data-target="#loginBox">Login</button>	
+					{% endif %}
+					<!-- Navigation buttons -->
+					<ul class="nav navbar-nav navbar-right">
+						<li><a href="index">Home</a></li>
+						<li><a href="gallery">Gallery</a></li>
+						<li><a href="attractions">Attractions</a></li>
+						<li><a href="reviews">Reviews</a></li>
+						<li><a href="booking">Book Now</a></li>
+						<li><a href="contactus">Contact</a></li>
+					</ul>
+				
+				</div>
+			</div>
+		</nav>
+
+		<!-- Modal login box -->
+		<div id="loginBox" class="modal fade" role="dialog">
+			<div class="modal-dialog modal-sm">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h4 class="modal-title">Login</h4>
+					</div>
+					<div class="modal-body">
+						<form id="login" action="/login" method="post">
+							<input type="text" id="username" name="username" class="form-control" placeholder="Username"><br>
+							<input type="password" id="pwd" name="pwd" class="form-control" placeholder="Password"><br>
+							<button type="submit" class="btn btn-default btn-lg">Login</button>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Jumbotron -->
+		<div class="jumbotron">
+			<div class="container">
+				<h1>412 Precondition Failed</h1>
+				<p>You attempted to access a resource to which you were required to meet certain conditions. This might be because you were attempting to book property on unavailable dates or the dates themselves were invalid. Try again with valid information.</p>
+				<p><a class="btn btn-primary btn-lg" href="index" role="button">Back to homepage</a></p>
+			</div>
+		</div>
+
+        
+        <div class="container">
+            <footer class="footer">
+                <div class="container text-center">
+                    <p class="text-muted">Created by Adrian Wesolowski and James Wiggan. Last modified on 15/12/2016.</p>
+                </div>
+            </footer>
+        </div>
+		<script src="{{ url_for('static', filename='script.js') }}"></script>
+		<!-- script is loaded after the elements are completely loaded in order to make sure event handlers are properly attached -->
+	</body>
+</html>

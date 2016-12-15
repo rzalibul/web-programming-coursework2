@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Gallery</title>
+        <meta charset="utf-8" />
+        
+        <!-- Latest compiled and minified Bootstrap CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+		<!-- Bootstrap theme -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+		<!-- stylesheet.css -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles/stylesheet.css') }}">
+        <!-- JQuery -->
+        <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+        <!-- Latest compiled and minified JavaScript -->
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+	</head>
+	<body>
+        
+		<!-- Navigation Bar -->
+		<nav class="navbar navbar-inverse">
+			<div class="container-fluid">
+				<!-- Header of Navbar -->
+				<div class="navbar-header">
+					<a class="navbar-brand" href="index">
+						<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
+					</a>
+				</div>
+				
+				<!-- Right of Navbar -->
+				<div class="collapse navbar-collapse">
+
+					<!-- Handle signed in/signed out user -->
+					{% if session['username'] %}
+					<button type="button" class="btn btn-default navbar-btn navbar-right" onclick="logout()">Logout</button>
+					<p class="navbar-text navbar-right">
+						Logged in as {{session['username']}}
+							{% if session['isAdmin'] == True %}
+								(Admin)
+							{% endif %}
+					</p>
+					{% else %}
+					<button type="button" class="btn btn-default navbar-btn navbar-right" data-toggle="modal" data-target="#loginBox">Login</button>	
+					{% endif %}
+					<!-- Navigation buttons -->
+					<ul class="nav navbar-nav navbar-right">
+						<li><a href="index">Home</a></li>
+						<li class="active"><a href="gallery">Gallery</a></li>
+						<li><a href="attractions">Attractions</a></li>
+						<li><a href="reviews">Reviews</a></li>
+						<li><a href="booking">Book Now</a></li>
+						<li><a href="contactus">Contact</a></li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+
+		<!-- Modal login box -->
+		<div id="loginBox" class="modal fade" role="dialog">
+			<div class="modal-dialog modal-sm">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h4 class="modal-title">Login</h4>
+					</div>
+					<div class="modal-body">
+						<form id="login" action="/login" method="post">
+							<input type="text" name="username" class="form-control" placeholder="Username"><br>
+							<input type="password" name="pwd" class="form-control" placeholder="Password"><br>
+							<button type="submit" class="btn btn-default btn-lg">Login/Sign Up</button>
+                            <h5>Don't have an account? <a href="#" data-dismiss="modal" data-toggle="modal" data-target="#signupBox">Register</a>!</h5>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+        <!-- Modal signup box -->
+		<div id="signupBox" class="modal fade" role="dialog">
+			<div class="modal-dialog modal-sm">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h4 class="modal-title">Sign Up</h4>
+					</div>
+					<div class="modal-body">
+						<form id="register" action="/register" method="post">
+							<input type="text" name="username" class="form-control" placeholder="Username"><br>
+							<input type="password" name="pwd" class="form-control" placeholder="Password"><br>
+
+							<button type="submit" class="btn btn-default btn-lg">Sign Up</button>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+        <!-- Gallery -->
+        <div class="jumbotron">
+            <div class="container">
+                <h1>Gallery</h1>
+				<div class="col-md-12"> <!-- Content column -->
+					<nav aria-label="gallerypage">
+						<img id="fullSize" class="thumbnail img-responsive" src="static/img/1.jpg" alt="Image 1" longdesc="0" />
+						<ul class="pager">
+							<li><a class="imgNav" id="prevImg" href="#prev">Previous</a></li>
+							<li><a class="imgNav" id="nextImg" href="#next">Next</a></li>
+							<!-- <div class="fullScreen">
+							</div>
+							<img class="bigImage" src="img/1.jpg" /> -->
+						</ul>
+					</nav>
+				</div>
+				<div class="col-md-12">
+					<!-- based on: http://www.bootply.com/81478 -->
+					<div class="well">
+						<div id="thumbnailSlider" class="carousel slide">
+							<div class="carousel-inner">
+								<div class="item active">
+									<div class="row"> <!-- Slides row -->
+										<div class="col-sm-3"><a href="#1" class="thumbnail"><img class="img-responsive" src="static/img/1.jpg" alt="Image 1" /></a></div>
+										<div class="col-sm-3"><a href="#2" class="thumbnail"><img class="img-responsive" src="static/img/2.jpg" alt="Image 2" /></a></div>
+										<div class="col-sm-3"><a href="#3" class="thumbnail"><img class="img-responsive" src="static/img/3.jpg" alt="Image 3" /></a></div>
+										<div class="col-sm-3"><a href="#4" class="thumbnail"><img class="img-responsive" src="static/img/4.jpg" alt="Image 4" /></a></div>
+									</div>
+								</div>
+								<div class="item">
+									<div class="row"> <!-- Slides row -->
+				
+										<div class="col-sm-3"><a href="#5" class="thumbnail"><img class="img-responsive" src="static/img/5.jpg" alt="Image 5" /></a></div>
+										<div class="col-sm-3"><a href="#6" class="thumbnail"><img class="img-responsive" src="static/img/6.jpg" alt="Image 6" /></a></div>
+										<div class="col-sm-3"><a href="#7" class="thumbnail"><img class="img-responsive" src="static/img/7.jpg" alt="Image 7" /></a></div>
+										<div class="col-sm-3"><a href="#8" class="thumbnail"><img class="img-responsive" src="static/img/8.jpg" alt="Image 8" /></a></div>
+									</div>
+								</div>
+								<div class="item">
+									<div class="row"> <!-- Slides row -->
+							
+										<div class="col-sm-3"><a href="#9" class="thumbnail"><img class="img-responsive" src="static/img/9.jpg" alt="Image 9" /></a></div>
+										<div class="col-sm-3"><a href="#10" class="thumbnail"><img class="img-responsive" src="static/img/10.jpg" alt="Image 10" /></a></div>
+										<div class="col-sm-3"><a href="#11" class="thumbnail"><img class="img-responsive" src="static/img/11.jpg" alt="Image 11" /></a></div>
+										<div class="col-sm-3"><a href="#12" class="thumbnail"><img class="img-responsive" src="static/img/12.jpg" alt="Image 12" /></a></div>
+
+									</div>
+								</div>
+								<div class="item">
+									<div class="row"> <!-- Slides row -->
+										<div class="col-sm-3"><a href="#13" class="thumbnail"><img class="img-responsive" src="static/img/13.jpg" alt="Image 13" /></a></div>
+										<div class="col-sm-3"><a href="#14" class="thumbnail"><img class="img-responsive" src="static/img/14.jpg" alt="Image 14" /></a></div>
+										<div class="col-sm-3"><a href="#15" class="thumbnail"><img class="img-responsive" src="static/img/15.jpg" alt="Image 15" /></a></div>
+										<div class="col-sm-3"><a href="#16" class="thumbnail"><img class="img-responsive" src="static/img/16.jpg" alt="Image 16" /></a></div>
+									</div>
+								</div>
+								<div class="item">
+									<div class="row">
+										<div class="col-sm-3"><a href="#17" class="thumbnail"><img class="img-responsive" src="static/img/17.jpg" alt="Image 17" /></a></div>
+										<div class="col-sm-3"><a href="#18" class="thumbnail"><img class="img-responsive" src="static/img/18.jpg" alt="Image 18" /></a></div>
+										<div class="col-sm-3"><a href="#19" class="thumbnail"><img class="img-responsive" src="static/img/19.jpg" alt="Image 19" /></a></div>
+									</div>
+								</div>
+							</div>
+							<a class="left carousel-control" href="#thumbnailSlider" data-slide="prev">‹</a>
+							<a class="right carousel-control" href="#thumbnailSlider" data-slide="next">›</a>
+						</div>
+					</div>
+				</div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="container">
+            <footer class="footer">
+                <div class="container text-center">
+                    <p class="text-muted">Created by Adrian Wesolowski and James Wiggan. Last modified on 15/12/2016.</p>
+                </div>
+            </footer>
+        </div>
+		<script src="{{ url_for('static', filename='script.js') }}"></script>
+		<script src="{{ url_for('static', filename='gallery.js') }}"></script>
+        <!-- scripts are loaded after the elements are completely loaded in order to make sure event handlers are properly attached -->
+	</body>
+</html>
