@@ -51,7 +51,9 @@ $("a.thumbnail").click
 	{
 		var mainImg = document.getElementById("fullSize");
 		var thumbnail = this.firstChild;
+		var index = parseInt(this.getAttribute("href").replace('#', '')) - 1;
 		mainImg.src = thumbnail.src;
+		mainImg.setAttribute("longdesc", index);
 	}
 );
 
@@ -82,12 +84,22 @@ $(".imgNav").click
 			if(selector === "prevImg")
 			{
 				if(index % 4 == 3)
-					$('#thumbnailSlider').carousel('prev');
+				{
+					for(var i = 0; i < (index / 4); i++)
+					{
+						$('#thumbnailSlider').carousel('prev');
+					}
+				}
 			}
 			else
 			{
 				if(index % 4 == 0)
-					$('#thumbnailSlider').carousel('next');
+				{
+					for(var i = 0; i < (index / 4); i++)
+					{
+						$('#thumbnailSlider').carousel('next');
+					}
+				}
 			}
 		}
 		else		// the slidebar could be overflown if desired; otherwise there is nothing else to do
