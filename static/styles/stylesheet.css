@@ -8,3 +8,8 @@ a.thumbnail > img.img-responsive {
 	height: 210px;
 	width: 5%;
 }
+iframe
+{
+	width: 640px;
+	height: 480px;
+}

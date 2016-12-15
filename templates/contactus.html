@@ -69,9 +69,10 @@
 					</div>
 					<div class="modal-body">
 						<form id="login" action="/login" method="post">
-							<input type="text" id="username" name="username" class="form-control" placeholder="Username"><br>
-							<input type="password" id="pwd" name="pwd" class="form-control" placeholder="Password"><br>
-							<button type="submit" class="btn btn-default btn-lg">Login</button>
+							<input type="text" name="username" class="form-control" placeholder="Username"><br>
+							<input type="password" name="pwd" class="form-control" placeholder="Password"><br>
+							<button type="submit" class="btn btn-default btn-lg">Login/Sign Up</button>
+                            <h5>Don't have an account? <a href="#" data-dismiss="modal" data-toggle="modal" data-target="#signupBox">Register</a>!</h5>
 						</form>
 					</div>
 					<div class="modal-footer">
@@ -80,7 +81,30 @@
 				</div>
 			</div>
 		</div>
-        
+
+        <!-- Modal signup box -->
+		<div id="signupBox" class="modal fade" role="dialog">
+			<div class="modal-dialog modal-sm">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h4 class="modal-title">Sign Up</h4>
+					</div>
+					<div class="modal-body">
+						<form id="register" action="/register" method="post">
+							<input type="text" name="username" class="form-control" placeholder="Username"><br>
+							<input type="password" name="pwd" class="form-control" placeholder="Password"><br>
+
+							<button type="submit" class="btn btn-default btn-lg">Sign Up</button>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
         
         <!-- Rows -->
         <div class="container">
@@ -103,7 +127,7 @@
                 </div>
                 <div class="col-md-6">
                     <h2>Find us!</h2>
-                    <iframe style="width: 640px; height: 480px;" src="https://www.google.com/maps/embed?pb=!1m21!1m12!1m3!1d77078.65379789847!2d1.4757265280950054!3d52.86366348321491!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m6!3e6!4m0!4m3!3m2!1d52.8717462!2d1.438991!5e0!3m2!1sen!2suk!4v1477736227853" allowfullscreen>If you see this text, this means your browser failed to display the embedded map.</iframe>
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m21!1m12!1m3!1d77078.65379789847!2d1.4757265280950054!3d52.86366348321491!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m6!3e6!4m0!4m3!3m2!1d52.8717462!2d1.438991!5e0!3m2!1sen!2suk!4v1477736227853" allowfullscreen></iframe>
                 </div>
             </div>
         </div>

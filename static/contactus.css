@@ -1,0 +1,25 @@
+/* contact page specific */
+div#contentWrap
+{
+	/* override main CSS styles*/
+	flex-direction: row;
+}
+div#contactInfo
+{
+	float: left;
+	flex-grow: 1;
+	text-align: center;
+	justify-content: flex-start;
+}
+
+div#map
+{
+	float: left;
+	justify-content: flex-start;
+}
+iframe
+{
+	border: 0;
+	width: 600px;
+	height: 450px;
+}

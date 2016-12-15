@@ -154,7 +154,7 @@ function deleteComment(event, id)
 				},
 				error: function(response)
 				{
-					
+					//console.log(response);
 				}
 			}
 		);
