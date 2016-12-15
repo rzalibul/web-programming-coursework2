@@ -99,8 +99,9 @@ def checkPermissions(owner):
 def max(list):
 	maxVal = 0
 	for row in list:
-		if int(row[0]) > maxVal:
-			maxVal = int(row[0])
+		if row:
+			if int(row[0]) > maxVal:
+				maxVal = int(row[0])
 	return maxVal
 app = Flask(__name__)
 
