@@ -81,31 +81,71 @@
         <div class="jumbotron">
             <div class="container">
                 <h1>Gallery</h1>
-                <div class="row">
-                    <div class="col-md-2"> <!-- Slides column -->
-                        <div id="slides">
-                            <!-- using longdesc as an index counter -->
-                            <img class="thumbnail img-responsive" src="static/img/1.jpg" alt="Image 1" longdesc="0" />
-                            <img class="thumbnail img-responsive" src="static/img/2.jpg" alt="Image 2" longdesc="1" />
-                            <img class="thumbnail img-responsive" src="static/img/3.jpg" alt="Image 3" longdesc="2" />
-                            <img class="thumbnail img-responsive" src="static/img/4.jpg" alt="Image 4" longdesc="3" />
-                            <img class="thumbnail img-responsive" src="static/img/5.jpg" alt="Image 5" longdesc="4" />
-                        </div>
-                        
-                    </div>
-                    <div class="col-md-10"> <!-- Content column -->
-                        <nav aria-label="gallerypage">
-                            <ul class="pager">
-                                <img id="fullSize" class="thumbnail img-responsive" src="static/img/1.jpg" alt="Image 1" longdesc="0" />
-                                <li><a class="imgNav" id="prevImg" href="#">Previous</a></li>
-                                <li><a class="imgNav" id="nextImg" href="#">Next</a></li>
-                                <!-- <div class="fullScreen">
-                                </div>
-                                <img class="bigImage" src="img/1.jpg" /> -->
-                            </ul>
-                        </nav>
-                    </div>
-                </div>
+				<div class="col-md-12"> <!-- Content column -->
+					<nav aria-label="gallerypage">
+						<ul class="pager">
+							<img id="fullSize" class="thumbnail img-responsive" src="static/img/1.jpg" alt="Image 1" longdesc="0" />
+							<li><a class="imgNav" id="prevImg" href="#prev">Previous</a></li>
+							<li><a class="imgNav" id="nextImg" href="#next">Next</a></li>
+							<!-- <div class="fullScreen">
+							</div>
+							<img class="bigImage" src="img/1.jpg" /> -->
+						</ul>
+					</nav>
+				</div>
+				<div class="col-md-12">
+					<!-- based on: http://www.bootply.com/81478 -->
+					<div class="well">
+						<div id="thumbnailSlider" class="carousel slide">
+							<div class="carousel-inner">
+								<div class="item active">
+									<div class="row"> <!-- Slides row -->
+										<div class="col-sm-3"><a href="#1" class="thumbnail"><img class="img-responsive" src="static/img/1.jpg" alt="Image 1" /></a></div>
+										<div class="col-sm-3"><a href="#2" class="thumbnail"><img class="img-responsive" src="static/img/2.jpg" alt="Image 2" /></a></div>
+										<div class="col-sm-3"><a href="#3" class="thumbnail"><img class="img-responsive" src="static/img/3.jpg" alt="Image 3" /></a></div>
+										<div class="col-sm-3"><a href="#4" class="thumbnail"><img class="img-responsive" src="static/img/4.jpg" alt="Image 4" /></a></div>
+									</div>
+								</div>
+								<div class="item">
+									<div class="row"> <!-- Slides row -->
+				
+										<div class="col-sm-3"><a href="#5" class="thumbnail"><img class="img-responsive" src="static/img/5.jpg" alt="Image 5" /></a></div>
+										<div class="col-sm-3"><a href="#6" class="thumbnail"><img class="img-responsive" src="static/img/6.jpg" alt="Image 6" /></a></div>
+										<div class="col-sm-3"><a href="#7" class="thumbnail"><img class="img-responsive" src="static/img/7.jpg" alt="Image 7" /></a></div>
+										<div class="col-sm-3"><a href="#8" class="thumbnail"><img class="img-responsive" src="static/img/8.jpg" alt="Image 8" /></a></div>
+									</div>
+								</div>
+								<div class="item">
+									<div class="row"> <!-- Slides row -->
+							
+										<div class="col-sm-3"><a href="#9" class="thumbnail"><img class="img-responsive" src="static/img/9.jpg" alt="Image 9" /></a></div>
+										<div class="col-sm-3"><a href="#10" class="thumbnail"><img class="img-responsive" src="static/img/10.jpg" alt="Image 10" /></a></div>
+										<div class="col-sm-3"><a href="#11" class="thumbnail"><img class="img-responsive" src="static/img/11.jpg" alt="Image 11" /></a></div>
+										<div class="col-sm-3"><a href="#12" class="thumbnail"><img class="img-responsive" src="static/img/12.jpg" alt="Image 12" /></a></div>
+
+									</div>
+								</div>
+								<div class="item">
+									<div class="row"> <!-- Slides row -->
+										<div class="col-sm-3"><a href="#13" class="thumbnail"><img class="img-responsive" src="static/img/13.jpg" alt="Image 13" /></a></div>
+										<div class="col-sm-3"><a href="#14" class="thumbnail"><img class="img-responsive" src="static/img/14.jpg" alt="Image 14" /></a></div>
+										<div class="col-sm-3"><a href="#15" class="thumbnail"><img class="img-responsive" src="static/img/15.jpg" alt="Image 15" /></a></div>
+										<div class="col-sm-3"><a href="#16" class="thumbnail"><img class="img-responsive" src="static/img/16.jpg" alt="Image 16" /></a></div>
+									</div>
+								</div>
+								<div class="item">
+									<div class="row">
+										<div class="col-sm-3"><a href="#17" class="thumbnail"><img class="img-responsive" src="static/img/17.jpg" alt="Image 17" /></a></div>
+										<div class="col-sm-3"><a href="#18" class="thumbnail"><img class="img-responsive" src="static/img/18.jpg" alt="Image 18" /></a></div>
+										<div class="col-sm-3"><a href="#19" class="thumbnail"><img class="img-responsive" src="static/img/19.jpg" alt="Image 19" /></a></div>
+									</div>
+								</div>
+							</div>
+							<a class="left carousel-control" href="#thumbnailSlider" data-slide="prev">‹</a>
+							<a class="right carousel-control" href="#thumbnailSlider" data-slide="next">›</a>
+						</div>
+					</div>
+				</div>
             </div>
         </div>
         
@@ -118,6 +158,7 @@
             </footer>
         </div>
 		<script src="{{ url_for('static', filename='script.js') }}"></script>
+		<script src="{{ url_for('static', filename='gallery.js') }}"></script>
         <!-- script is loaded after the elements are completely loaded in order to make sure event handlers are properly attached -->
 	</body>
 </html>
