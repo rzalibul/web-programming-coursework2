@@ -85,20 +85,14 @@ $(".imgNav").click
 			{
 				if(index % 4 == 3)
 				{
-					for(var i = 0; i < (index / 4); i++)
-					{
-						$('#thumbnailSlider').carousel('prev');
-					}
+					$('#thumbnailSlider').carousel((Math.floor(index / 4)));
 				}
 			}
 			else
 			{
 				if(index % 4 == 0)
 				{
-					for(var i = 0; i < (index / 4); i++)
-					{
-						$('#thumbnailSlider').carousel('next');
-					}
+					$('#thumbnailSlider').carousel((index / 4));
 				}
 			}
 		}
@@ -106,27 +100,5 @@ $(".imgNav").click
 		{
 			
 		}	
-	}
-);
-
-$("div.imgSlideNav").click
-(
-	function(event)
-	{
-		var imgList = getImgList();
-		var firstIndex = parseInt($("img.thumbnail").attr("longdesc"));
-
-		if(event.target.id == "prevSlidebarImg")
-			changeSlidebar(imgList, firstIndex - 1, true);
-		else
-		{
-			if(firstIndex > imgList.length - 5)				// prevent the slidebar from getting a bunch of "empty images"
-				return;
-			changeSlidebar(imgList, firstIndex + 5, false);
-		}
-		// when faced with multiple selection, .attr() method returns the first element's result
-		// therefore, index must be increased to a value out of bounds for current slidebar selection
-		// 1 to the left (previous) is already out of bounds relative to the first element
-		// while 5 needs to be added to the first index as it is the overall number of images in slidebar
 	}
 );
