@@ -23,9 +23,6 @@ function logout()
 /* review page functionality */
 function saveComment()
 {
-//	var cText = $('#commentBox').val();
-//	var cName = $('#nameBox').val();
-	// above could be used for client-side validation
 	if ($('span.stars.starSelected').index() != -1)						// if a star has been selected, proceed
 	{
 		var rating = 5 - $('span.stars.starSelected').index();			// nodes are in inverted order (check reviews.css if required)
@@ -51,12 +48,9 @@ function saveComment()
 				{
 					curRating = curRating.replace('class="starSelected"', '');
 				}
-				var prevComments = $('#commentList').html();
+                var curComment ='<div class="container"><div class="panel panel-default"><div class="panel-heading">'+ curRating + ' ' + cmtList.author + ' on ' + cmtList.date +'</div><div class="panel-body"><p>' + cmtList.comment + '</p><button type="button" class="btn btn-default pull-right" onclick="deleteComment(' + cmtList.id + ')>Delete</button><button type="button" class="btn btn-default pull-right" onclick="modifyComment(' + cmtList.id + ')>Modify</button></div></div></div>';
 
-                var curComment ='<div class="container"><div class="panel panel-default"><div class="panel-heading">'+ curRating + ' ' + cmtList.author + ' on ' + cmtList.date +'</div><div class="panel-body"><p>' + cmtList.comment + '</p><button type="button" class="btn btn-default pull-right" onclick="modifyComment(' + cmtList.id + ')>Delete</button><button type="button" class="btn btn-default pull-right" onclick="modifyComment(' + cmtList.id + ')>Modify</button></div></div></div>' + prevComments;
-				// to do: buttons are only visible if user is in session
-				$('#commentList').empty();
-				$('#commentList').append(curComment);
+				$('#commentList').prepend(curComment);
 			},
 			error: function(response)
 			{
@@ -81,7 +75,7 @@ function modifyComment(event, id)
 	{
 		var newCmtArea = '<form id="modCmt_' + id + '" class="reviewForm" action="/modifyComment" method="post" role="form"><textarea class="form-control commentBox" name="comment" placeholder="Enter your comment..."></textarea><br />Your rating (if applicable): <div class="rating"><span class="stars">&#9734;</span><span class="stars">&#9734;</span><span class="stars">&#9734;</span><span class="stars">&#9734;</span><span class="stars">&#9734;</span></div><input class="hiddenRating" name="rating" type="number" hidden /></form>'
 		$(event).prev().prev().html(newCmtArea);			// modify the selector to the comment area for modifying comments
-		// attach an event
+		// attach an event for the newly added rating bar
 		$('span.stars').click						// selects a particular rating on click
 		(
 			function(event)
@@ -118,10 +112,12 @@ function modifyComment(event, id)
 					{
 						curRating = curRating.replace('class="starSelected"', '');
 					}
-					var curComment = '<span class="cmtName">' + modifiedCmt.author + ' says:' + '</span><p class="comment">' + modifiedCmt.comment + '</p>' + 'Rating:' + curRating + '<span class="date">' + modifiedCmt.date + '</span><button class="cmtBtn" value="Modify" onclick="modifyComment(this,' + modifiedCmt.id + ')">Modify</button><button class="cmtBtn" value="Delete" onclick="deleteComment(this,' + modifiedCmt.id + ')">Delete</button>';
+					var curComment = '<div class="container"><div class="panel panel-default"><div class="panel-heading">'+ curRating + ' ' + modifiedCmt.author + ' on ' + modifiedCmt.date +'</div><div class="panel-body"><p>' + modifiedCmt.comment + '</p><button type="button" class="btn btn-default pull-right" onclick="deleteComment(' + modifiedCmt.id + ')>Delete</button><button type="button" class="btn btn-default pull-right" onclick="modifyComment(' + modifiedCmt.id + ')>Modify</button></div></div></div>';
 					
-					$('div#cmt_' + id).empty();
-					$('div#cmt_' + id).append(curComment);
+					// delete the container
+					$(event).parent().parent().parent().remove();
+					// prepend the new container to the comment list
+					$('#commentList').prepend(curComment);
 					// no need to remove the commenting section as it was already emptied
 				},
 				error: function(response)
@@ -153,6 +149,7 @@ function deleteComment(event, id)
 					{
 						$('div#cmt_' + id).remove();
 						alert('Comment removed!');
+						location.reload();
 					}
 				},
 				error: function(response)
@@ -162,13 +159,6 @@ function deleteComment(event, id)
 			}
 		);
 	}
-}
-
-function clearComment()
-{
-	$("#nameBox").val("");
-	$("#commentBox").val("");
-	$("#hiddenRating").val("");
 }
 
 function fetchComments()
@@ -197,11 +187,11 @@ function fetchComments()
 						{
 							curRating = curRating.replace('class="starSelected"', '');
 						}
-                        comments += '<div class="container"><div class="panel panel-default"><div class="panel-heading">'+ curRating + ' ' + val.author + ' on ' + val.date +'</div><div class="panel-body"><p>' + val.comment + '</p><button type="button" class="btn btn-default pull-right" onclick="deleteComment(this,' + val.id + ')">Delete</button><button type="button" class="btn btn-default pull-right" onclick="modifyComment(this,' + val.id + ')">Modify</button></div></div></div>';
-                        
+						// add the comment to the top of the comment list
+                        $('#commentList').prepend('<div class="container"><div class="panel panel-default"><div class="panel-heading">'+ curRating + ' ' + val.author + ' on ' + val.date +'</div><div class="panel-body"><p>' + val.comment + '</p><button type="button" class="btn btn-default pull-right" onclick="deleteComment(this,' + val.id + ')">Delete</button><button type="button" class="btn btn-default pull-right" onclick="modifyComment(this,' + val.id + ')">Modify</button></div></div></div>');
 					}
 				);
-				$('#commentList').append(comments);
+				// $('#commentList').append(comments);
 			}
 		}
 	);
@@ -257,11 +247,6 @@ function estimateBooking(event)
 	}
 }
 
-function modifyBooking(id)
-{
-	
-}
-
 function deleteBooking(id)
 {
 	var response = confirm('Are you sure you want to delete this booking request?');
@@ -284,7 +269,7 @@ function deleteBooking(id)
 				},
 				error: function(response)
 				{
-					
+					console.log(response);
 				}
 			}
 		);

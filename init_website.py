@@ -48,7 +48,7 @@ def replaceCsvRow(filePath, rowReplacement, fieldnames, delete=False):
 	aList = readCsvFile(filePath)
 	for index, row in enumerate(aList):
         # safely cast into int to enforce one type
-		if row or delete == True:
+		if row:
 			if int(row[0]) == int(rowReplacement[fieldnames[0]]):
 				if delete == True:
 					aList[index] = []
@@ -58,7 +58,7 @@ def replaceCsvRow(filePath, rowReplacement, fieldnames, delete=False):
 						aList[index][counter] = rowReplacement[fieldnames[counter]]
 						counter += 1
 					# break out of the loop; IDs are unique
-					break
+				break
 	writeCsvFile(aList, filePath)
 	return
 

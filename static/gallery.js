@@ -5,6 +5,7 @@ $(document).ready
 		$('#thumbnailSlider').carousel
 		(
 			{
+				// don't slide automatically
 				interval: 0
 			}
 		);
@@ -14,7 +15,7 @@ $(document).ready
 			'slid.bs.carousel', 
 			function() 
 			{
-				
+				// possibly do something else when the slider finishes animating
 			}
 		);   
 	}
@@ -62,7 +63,7 @@ $(".imgNav").click
 	function changeAdjImage(event)
 	{
 		var imgList = getImgList();
-		// defining array of image paths
+		// defining array of image file names
 		var selector = event.target.id;								// selector will hold the id of event object (prevImg or nextImg in this case)
 		var index = parseInt($("img#fullSize").attr("longdesc"));	// get the 'index' from the current displayed image and cast it to integer
 
@@ -98,9 +99,5 @@ $(".imgNav").click
 				}
 			}
 		}
-		else		// the slidebar could be overflown if desired; otherwise there is nothing else to do
-		{
-			
-		}	
 	}
 );
