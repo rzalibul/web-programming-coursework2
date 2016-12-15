@@ -65,41 +65,13 @@
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal">&times;</button>
-						<h4 class="modal-title">Login/Sign Up</h4>
+						<h4 class="modal-title">Login</h4>
 					</div>
 					<div class="modal-body">
 						<form id="login" action="/login" method="post">
 							<input type="text" id="username" name="username" class="form-control" placeholder="Username"><br>
 							<input type="password" id="pwd" name="pwd" class="form-control" placeholder="Password"><br>
 							<button type="submit" class="btn btn-default btn-lg">Login</button>
-                            <h5>Don't have an account? <a href="#" data-dismiss="modal" data-toggle="modal" data-target="#signupBox">Register</a>!</h5>
-						</form>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-					</div>
-				</div>
-			</div>
-		</div>
-
-        <!-- Modal signup box -->
-		<div id="signupBox" class="modal fade" role="dialog">
-			<div class="modal-dialog modal-sm">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal">&times;</button>
-						<h4 class="modal-title">Sign Up</h4>
-					</div>
-					<div class="modal-body">
-						<form id="login" action="/register" method="post">
-							<input type="text" id="username" name="username" class="form-control" placeholder="Username"><br>
-							<input type="password" id="pwd" name="pwd" class="form-control" placeholder="Password"><br>
-                            <label>Permissions:</label>
-                            <select name="permissions" class="form-control">
-                                <option>user</option>
-                                <option>admin</option>
-                            </select>
-							<button type="submit" class="btn btn-default btn-lg">Sign Up</button>
 						</form>
 					</div>
 					<div class="modal-footer">

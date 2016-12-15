@@ -1,44 +1,4 @@
 "use strict";
-// utility functions for local storage with use of JSON
-// function setObject(key, value) 
-// {
-	// window.localStorage.setItem(key, JSON.stringify(value));
-// };
-// function getObject(key) 
-// {
-	// var storage = window.localStorage;
-	// var value = storage.getItem(key);
-	// return value && JSON.parse(value);
-// };
-// function clearStorage() 
-// {
-	// // removes everything placed in localstorage
-	// window.localStorage.clear();
-// };
-
-// escape HTML characters function
-// source: http://stackoverflow.com/questions/24816/escaping-html-strings-with-jquery
-function escapeHtml(string) 
-{
-	var entityMap = 
-	{
-		"&": "&amp;",
-		"<": "&lt;",
-		">": "&gt;",
-		'"': '&quot;',
-		"'": '&#39;',
-		"/": '&#x2F;'
-	};
-	return String(string).replace
-	(
-		/[&<>"'\/]/g, 
-		function(s) 
-		{
-			return entityMap[s];
-		}
-	);
-	// perform a global match for characters in the regular expression and return the corresponding HTML escape character that is mapped in entity map
-}
 /* login/logout requests */
 function logout()
 {
@@ -84,7 +44,6 @@ function saveComment()
 				// parse the response into proper fields (id, author, comment, rating, date)
 				var cmtList = JSON.parse(response);
 				// format it into proper HTML
-				// to do: if cmtList.rating == 0 then don't add rating stars/add "no rating" string
 				cmtList.rating = -1*(parseInt(cmtList.rating) - 5);				// revert the node index back
 				var curRating = '<div class=rating><span class="starSelected">&#9734;</span><span class="starSelected">&#9734;</span><span class="starSelected">&#9734;</span><span class="starSelected">&#9734;</span><span class="starSelected">&#9734;</span></div>';
 				// remove the star selection until the rating is adjusted properly
@@ -93,8 +52,7 @@ function saveComment()
 					curRating = curRating.replace('class="starSelected"', '');
 				}
 				var prevComments = $('#commentList').html();
-				//var curComment = '<div id="cmt_' + cmtList.id + '"><span class="cmtName">' + cmtList.author + ' says:' + '</span><p class="comment">' + cmtList.comment + '</p>' + 'Rating:' + curRating + '<span class="date">' + cmtList.date + '</span><button class="cmtBtn" value="Modify" onclick="modifyComment(' + cmtList.id + ')">Modify</button><button class="cmtBtn" value="Delete" onclick="deleteComment(' + cmtList.id + ')">Delete</button></div>' + prevComments;
-                
+
                 var curComment ='<div class="container"><div class="panel panel-default"><div class="panel-heading">'+ curRating + ' ' + cmtList.author + ' on ' + cmtList.date +'</div><div class="panel-body"><p>' + cmtList.comment + '</p><button type="button" class="btn btn-default pull-right" onclick="modifyComment(' + cmtList.id + ')>Delete</button><button type="button" class="btn btn-default pull-right" onclick="modifyComment(' + cmtList.id + ')>Modify</button></div></div></div>' + prevComments;
 				// to do: buttons are only visible if user is in session
 				$('#commentList').empty();
@@ -110,7 +68,6 @@ function saveComment()
 
 function modifyComment(event, id)
 {
-	//id = parseInt(id);
 	// check whether another comment area exists that isn't the one that is associated with the currently clicked button
 	if($('div.commentArea > form[id^="modCmt_"]').length && ($('div.commentArea > form[id^="modCmt_"]').attr('id') != ('modCmt_' + id)))
 	{
@@ -240,9 +197,6 @@ function fetchComments()
 						{
 							curRating = curRating.replace('class="starSelected"', '');
 						}
-                        /*
-						comments += '<div id="cmt_' + val.id + '"><span class="cmtName">' + val.author + ' says:' + '</span><p class="comment">' + val.comment + '</p>' + 'Rating:' + curRating + '<span class="date">' + val.date + '</span><button class="cmtBtn" value="Modify" onclick="modifyComment(' + val.id + ')">Modify</button><button class="cmtBtn" value="Delete" onclick="deleteComment(' + val.id + ')">Delete</button></div>';
-                        */
                         comments += '<div class="container"><div class="panel panel-default"><div class="panel-heading">'+ curRating + ' ' + val.author + ' on ' + val.date +'</div><div class="panel-body"><p>' + val.comment + '</p><button type="button" class="btn btn-default pull-right" onclick="deleteComment(this,' + val.id + ')">Delete</button><button type="button" class="btn btn-default pull-right" onclick="modifyComment(this,' + val.id + ')">Modify</button></div></div></div>';
                         
 					}

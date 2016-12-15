@@ -48,7 +48,7 @@ def replaceCsvRow(filePath, rowReplacement, fieldnames, delete=False):
 	aList = readCsvFile(filePath)
 	for index, row in enumerate(aList):
         # safely cast into int to enforce one type
-		if row:
+		if row or delete == True:
 			if int(row[0]) == int(rowReplacement[fieldnames[0]]):
 				if delete == True:
 					aList[index] = []
@@ -334,16 +334,23 @@ def deleteBooking():
 	fieldNames = ['id', 'name', 'firstName', 'lastName', 'email', 'telNum', 'arrivalDate', 'departureDate', 'submitDate', 'price', 'status']
 	id = request.form['booking_id']
 	row = findCsvRow(bookingsPath, fieldNames, 'id', id)
-	if checkPermissions(row['author']) == True:
+	print(row)
+	if checkPermissions(row['name']) == True:
 		replaceCsvRow(bookingsPath, {'id': id}, fieldNames, delete=True)
 		return json.dumps({'status': 'OK'})
 	else:
-		return redirect('/booking', code=401)	# 401 Unauthorised
+		abort(401)			# 401 Unauthorised
 
 # Error Handling (Miguel Greenberg: Flask Web Development, )
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
+@app.errorhandler(401)
+def not_authorised(e):
+	return render_template('401.html'), 401
+@app.errorhandler(412)
+def conditions_not_met(e):
+	return render_template('412.html'), 412
 
 if __name__ == '__main__':
 	# pseudo RNG key for sessions
