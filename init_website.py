@@ -29,10 +29,11 @@ def findCsvRow(filePath, fieldnames, field, val, iterate=False):
 				dict.move_to_end(fieldnames[counter])					# and move to the end as OrderedDict doesn't maintain sorted order after changing the already constructed object
 				counter += 1
 			if field in dict:
-				if iterate:
-					list.append(dict)
-				else:
-					return dict
+				if dict[field] == val:
+					if iterate:
+						list.append(dict)
+					else:
+						return dict
 	# return the list; if no values were found, the list will be empty
 	return list
 
@@ -44,17 +45,18 @@ def findCsvRow(filePath, fieldnames, field, val, iterate=False):
 def replaceCsvRow(filePath, rowReplacement, fieldnames, delete=False):
 	aList = readCsvFile(filePath)
 	for index, row in enumerate(aList):
-		# safely cast into int to enforce one type
-		if int(row[0]) == int(rowReplacement[fieldnames[0]]):
-			if delete == True:
-				aList[index] = []
-			else:
-				counter = 0
-				for field in rowReplacement:
-					aList[index][counter] = rowReplacement[fieldnames[counter]]
-					counter += 1
-				# break out of the loop; IDs are unique
-				break
+        # safely cast into int to enforce one type
+		if row:
+			if int(row[0]) == int(rowReplacement[fieldnames[0]]):
+				if delete == True:
+					aList[index] = []
+				else:
+					counter = 0
+					for field in rowReplacement:
+						aList[index][counter] = rowReplacement[fieldnames[counter]]
+						counter += 1
+					# break out of the loop; IDs are unique
+					break
 	writeCsvFile(aList, filePath)
 	return
 
@@ -83,8 +85,11 @@ def writeCsvFile(list, filePath):
 # only the user who created the content and an admin can manipulate such content
 # owner: name of the user who owns the content
 def checkPermissions(owner):
+	if 'isAdmin' in session:
+		if session['isAdmin'] == True:
+			return True
 	if 'username' in session:
-		return owner != 'Anonymous' and (session['username'] == owner or session['isAdmin'] == True)
+		return owner != 'Anonymous' and session['username'] == owner
 	else:
 		return False
 # checks the first element of the two-dimensional list and returns the max value
