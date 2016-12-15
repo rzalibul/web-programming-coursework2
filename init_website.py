@@ -318,6 +318,11 @@ def deleteBooking():
 	else:
 		return redirect('/booking', code=401)	# 401 Unauthorised
 
+# Error Handling (Miguel Greenberg: Flask Web Development, )
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
 if __name__ == '__main__':
 	# pseudo RNG key for sessions
 	app.secret_key = '\x0e\xdd\xbb\x86j2\xff-\xf3\\S[\xc0\x1a$\xa6t\x04\xd3\x87!\x1f\x9a,'
