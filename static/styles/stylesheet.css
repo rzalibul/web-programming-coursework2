@@ -1,0 +1,16 @@
+iframe
+{
+	width: 800px;
+	height: 600px;
+}
+
+a.thumbnail > img.img-responsive {
+    width: 100%;
+	height: 200px;
+}
+.carousel-control 
+{
+	line-height: 200px;
+	height: 210px;
+	width: 5%;
+}

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Contact Us</title>
+        <meta charset="utf-8" />
+        
+        <!-- Latest compiled and minified Bootstrap CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        
+		<!-- Bootstrap theme -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+        
+		<!-- stylesheet.css -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles/stylesheet.css') }}">
+        
+        <!-- JQuery -->
+        <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+        
+        <!-- Latest compiled and minified JavaScript -->
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+	</head>
+	<body>
+		<!-- Navigation Bar -->
+		<nav class="navbar navbar-inverse">
+			<div class="container-fluid">
+				<!-- Header of Navbar -->
+				<div class="navbar-header">
+					<a class="navbar-brand" href="index">
+						<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
+					</a>
+				</div>
+				
+				<!-- Right of Navbar -->
+				<div class="collapse navbar-collapse">
+
+					<!-- Handle signed in/signed out user -->
+					{% if session['username'] %}
+					<button type="button" class="btn btn-default navbar-btn navbar-right" onclick="logout()">Logout</button>
+					<p class="navbar-text navbar-right">
+						Logged in as {{session['username']}}
+							{% if session['isAdmin'] == True %}
+								(Admin)
+							{% endif %}
+					</p>
+					{% else %}
+					<button type="button" class="btn btn-default navbar-btn navbar-right" data-toggle="modal" data-target="#loginBox">Login</button>	
+					{% endif %}
+					<!-- Navigation buttons -->
+					<ul class="nav navbar-nav navbar-right">
+						<li><a href="index">Home</a></li>
+						<li><a href="gallery">Gallery</a></li>
+						<li><a href="attractions">Attractions</a></li>
+						<li><a href="reviews">Reviews</a></li>
+						<li><a href="booking">Book Now</a></li>
+						<li class="active"><a href="contactus">Contact</a></li>
+					</ul>
+				
+				</div>
+			</div>
+		</nav>
+
+		<!-- Modal login box -->
+		<div id="loginBox" class="modal fade" role="dialog">
+			<div class="modal-dialog modal-sm">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h4 class="modal-title">Login</h4>
+					</div>
+					<div class="modal-body">
+						<form id="login" action="/login" method="post">
+							<input type="text" name="username" class="form-control" placeholder="Username"><br>
+							<input type="password" name="pwd" class="form-control" placeholder="Password"><br>
+							<button type="submit" class="btn btn-default btn-lg">Login/Sign Up</button>
+                            <h5>Don't have an account? <a href="#" data-dismiss="modal" data-toggle="modal" data-target="#signupBox">Register</a>!</h5>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+        <!-- Modal signup box -->
+		<div id="signupBox" class="modal fade" role="dialog">
+			<div class="modal-dialog modal-sm">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h4 class="modal-title">Sign Up</h4>
+					</div>
+					<div class="modal-body">
+						<form id="register" action="/register" method="post">
+							<input type="text" name="username" class="form-control" placeholder="Username"><br>
+							<input type="password" name="pwd" class="form-control" placeholder="Password"><br>
+
+							<button type="submit" class="btn btn-default btn-lg">Sign Up</button>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+        
+        <!-- Rows -->
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h2>Contact us!</h2>
+                    <p>
+                        Placeholder Name<br>
+                        100 Placeholder Street<br>
+                        Placeholder<br>
+                        Placeholder, Placeholder<br>
+                        ZZ9 9ZZ<br>
+                        United Kingdom
+                    </p>
+                    <p>
+                        E-mail: <a href="mailto:placeholder@placeholder.com">placeholder@placeholder.com</a><br>
+				        Telephone: 017 8594 3281<br>
+						Fax: 017 8594 3492
+                    </p>
+                </div>
+                <div class="col-md-6">
+                    <h2>Find us!</h2>
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m21!1m12!1m3!1d77078.65379789847!2d1.4757265280950054!3d52.86366348321491!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m6!3e6!4m0!4m3!3m2!1d52.8717462!2d1.438991!5e0!3m2!1sen!2suk!4v1477736227853" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <footer class="footer">
+                <div class="container text-center">
+                    <p class="text-muted">Created by Adrian Wesolowski and James Wiggan. Last modified on 15/12/2016.</p>
+                </div>
+            </footer>
+        </div>
+		<script src="{{ url_for('static', filename='script.js') }}"></script>
+	</body>
+</html>
