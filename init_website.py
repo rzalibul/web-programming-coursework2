@@ -1,6 +1,8 @@
 from flask import Flask, abort, render_template, session, redirect, request
+import random, string
 import csv
 import json
+import hashlib
 from datetime import date, datetime
 from collections import OrderedDict
 
@@ -218,18 +220,42 @@ def deleteComment():
 
 # login and register functionality
 
-@app.route('/register')
+@app.route('/register', methods=['POST'])
 def register():
-	return render_template('register.html')
+	usersPath = "static\\users.csv"
+	username = request.form['username']
+	password = request.form['pwd']
+	fieldNames = ['username', 'password', 'permission', 'salt']
+	record = findCsvRow(usersPath, fieldNames, 'username', username)
+	if not(record):
+		# generate random salt; source: https://stackoverflow.com/questions/2030053/random-strings-in-python
+		salt = ''.join(random.choice(string.ascii_lowercase) for i in range(8))
+		# concatenate to password
+		password = salt + password
+		h = hashlib.sha256()
+		h.update(password.encode('utf-8'))
+		password = h.hexdigest()
+		newEntry = [username, password, 'user', salt]
+		list = readCsvFile(usersPath)
+		list.append(newEntry)
+		writeCsvFile(list, usersPath)
+	return redirect('/')
 
 @app.route('/login', methods=['POST'])
 def login():
 	usersPath = "static\\users.csv"
 	username = request.form['username']
 	password = request.form['pwd']
-	fieldNames = ['username', 'password', 'permission']
+	fieldNames = ['username', 'password', 'permission', 'salt']
 	record = findCsvRow(usersPath, fieldNames, 'username', username)
 	if record != "":
+		# concatenate user-entered password with salt in the file
+		password = record['salt'] + password
+		h = hashlib.sha256()
+		h.update(password.encode('utf-8'))
+		# encode the message and output the hex digest
+		password = h.hexdigest()
+		# check whether hashed values are the same
 		if record['password'] == password:
 			session['username'] = username
 			if record['permission'] == "admin":
@@ -242,10 +268,6 @@ def logout():
 	session.clear()
 	return redirect('/', code=200)		# send 200 OK response
 	
-@app.route('/thankyou')
-def thankyou():
-	return render_template('thankyou.html')    
-
 @app.route('/estimateBooking', methods=['GET'])
 def estimateBooking():
 	dailyRate = 60
