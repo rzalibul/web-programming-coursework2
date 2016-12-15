@@ -50,8 +50,8 @@ $("a.thumbnail").click
 	function(event)
 	{
 		var mainImg = document.getElementById("fullSize");
-		var thumbnail = this.firstChild;
-		var index = parseInt(this.getAttribute("href").replace('#', '')) - 1;
+		var thumbnail = this.firstChild;										// img attribute in a.thumbnail
+		var index = parseInt(this.getAttribute("href").replace('#', '')) - 1;	// calculate index based on the href value of a.thumbnail
 		mainImg.src = thumbnail.src;
 		mainImg.setAttribute("longdesc", index);
 	}
@@ -85,6 +85,7 @@ $(".imgNav").click
 			{
 				if(index % 4 == 3)
 				{
+					// JavaScript is loosely typed, therefore the need to round up
 					$('#thumbnailSlider').carousel((Math.floor(index / 4)));
 				}
 			}
@@ -92,6 +93,7 @@ $(".imgNav").click
 			{
 				if(index % 4 == 0)
 				{
+					// items are 4 each, therefore the slider needs to go to index / 4
 					$('#thumbnailSlider').carousel((index / 4));
 				}
 			}
