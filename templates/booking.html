@@ -2,99 +2,196 @@
 <html lang="en">
 	<head>
 		<title>Booking</title>
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/main.css') }}" />
-		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/booking.css') }}" />
-<!--		<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css" /> -->
         <meta charset="utf-8" />
-		<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-<!--		<script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> -->
+        
+        <!-- Latest compiled and minified Bootstrap CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        
+		<!-- Bootstrap theme -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+        
+		<!-- stylesheet.css -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles/stylesheet.css') }}">
+        
+        <!-- JQuery -->
+        <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+        
+        <!-- Latest compiled and minified JavaScript -->
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        
 	</head>
 	<body>
-		<div id="wrap">
-			<div id="header">
-				{% if session['username'] %}
-				<span> Hello {{session['username']}} </span>
-				<button type="button" value="Logout" onclick="logout()">Logout</button>
-				{% else %}
-				<form id="login" action="/login" method="post" role="form">
-					Username: <input id="username" name="username" type="text" placeholder="Username" /><br />
-					Password: <input id="pwd" name="pwd" type="password" placeholder="Password" /><br />
-					<input type="submit" value="Login" /><br />				
-				</form>
-				{% endif %}
-			</div>
-			<div id="mainNav">
-				<a class="mainNavLink" href="index">Main Page</a>
-				<a class="mainNavLink" href="gallery">Gallery</a>
-				<a class="mainNavLink" href="attractions">Local Activities</a>
-				<a class="mainNavLink" href="reviews">Reviews</a>
-				<a class="mainNavLink" href="booking">Book Now</a>
-				<a class="mainNavLink" href="contactus">Contact Us</a>
-			</div>
-			<div id="main">
-                <div id="contentWrap">
-					<h2 id="intro">Booking</h2>
-					{% if not(session['username'] and bookingList) %}
-                    <p>Please fill in all fields of the form:</p>
-                    
-                    <form class="bookingEntry" onsubmit="return estimateBooking(event)" action="/saveBooking" method="POST">
-                        First Name:<br />
-                        <input type="text" name="firstname" placeholder="First Name" /><br />
-                        Last Name:<br />
-                        <input type="text" name="lastname" placeholder="Last Name" /><br />
-                        Email:<br />
-                        <input type="email" name="email" placeholder="Email" /><br />
-                        Telephone No:<br />
-                        <input type="tel" name="tel" placeholder="Telephone No." /><br />
-                        Arrival Date<br />
-                        <input type="date" name="arrival" /><br />
-                        Departure Date<br />
-                        <input type="date" name="departure" /><br />
-			            <input type="submit" value="Check Estimate" /><br />
-                    </form>
-					{% if approvedBookings %}
-						<h2 id="desc">Availability</h2>
-						<p>Bookings are not available on listed dates:</p>
-						<table id="allBookings">
-							<tr>
-								<td>Arrival Date</td><td>Departure Date</td>
-							</tr>
-							{% for val in approvedBookings %}
-							<tr id="approvedBooking_{{val['id']}}">
-								<td>{{val['arrivalDate']}}</td><td>{{val['departureDate']}}</td>
-							</tr>
-							{% endfor %}
-						</table>
-					{% endif %}
-					{% else %}
-					<table id="userBookings">
-						<tr>
-							<td>ID</td><td>Username</td><td>First Name</td><td>Last Name</td><td>Email</td><td>Telephone Number</td><td>Arrival Date</td><td>Departure Date</td><td>Submission Date</td><td>Price</td><td>Status</td><td>Action</td>
-						</tr>
-							{% if isList %}
-								{% for val in bookingList %}
-								<tr id="booking_{{val['id']}}">
-									{% for key, dictValue in val.items() %}
-									<td>{{dictValue}}</td>
-									{% endfor %}
-									<td><button type="button" value="Modify" onclick="modifyBooking({{val['id']}})">Modify</button><button type="button" value="Delete" onclick="deleteBooking({{val['id']}})">Delete</button></td>
-								</tr>
-								{% endfor %}
-							{% else %}
-								<tr>
-								{% for key, value in bookingList.items() %}
-								<td>{{value}}</td>
-								{% endfor %}
-								</tr>
+		<!-- Navigation Bar -->
+		<nav class="navbar navbar-inverse">
+			<div class="container-fluid">
+				<!-- Header of Navbar -->
+				<div class="navbar-header">
+					<a class="navbar-brand" href="index">
+						<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
+					</a>
+				</div>
+				
+				<!-- Right of Navbar -->
+				<div class="collapse navbar-collapse">
+
+					<!-- Handle signed in/signed out user -->
+					{% if session['username'] %}
+					<button type="button" class="btn btn-default navbar-btn navbar-right" onclick="logout()">Logout</button>
+					<p class="navbar-text navbar-right">
+						Logged in as {{session['username']}}
+							{% if session['isAdmin'] == True %}
+								(Admin)
 							{% endif %}
-					</table>
+					</p>
+					{% else %}
+					<button type="button" class="btn btn-default navbar-btn navbar-right" data-toggle="modal" data-target="#loginBox">Login</button>	
 					{% endif %}
-                </div>
+					<!-- Navigation buttons -->
+					<ul class="nav navbar-nav navbar-right">
+						<li class="active"><a href="index">Home</a></li>
+						<li><a href="gallery">Gallery</a></li>
+						<li><a href="attractions">Attractions</a></li>
+						<li><a href="reviews">Reviews</a></li>
+						<li><a href="booking">Book Now</a></li>
+						<li><a href="contactus">Contact</a></li>
+					</ul>
+				
+				</div>
 			</div>
-			<div id="footer">
-				<p id="footnote">Created by Adrian Wesolowski. Last modified on 09/12/2016.</p>
+		</nav>
+
+		<!-- Modal login box -->
+		<div id="loginBox" class="modal fade" role="dialog">
+			<div class="modal-dialog modal-sm">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h4 class="modal-title">Login</h4>
+					</div>
+					<div class="modal-body">
+						<form id="login" action="/login" method="post">
+							<input type="text" id="username" name="username" class="form-control" placeholder="Username"><br>
+							<input type="password" id="pwd" name="pwd" class="form-control" placeholder="Password"><br>
+							<button type="submit" class="btn btn-default btn-lg">Login/Sign Up</button>
+                            <h5>Don't have an account? <a href="#" data-dismiss="modal" data-toggle="modal" data-target="#signupBox">Register</a>!</h5>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
 			</div>
 		</div>
+
+        <!-- Modal signup box -->
+		<div id="signupBox" class="modal fade" role="dialog">
+			<div class="modal-dialog modal-sm">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h4 class="modal-title">Sign Up</h4>
+					</div>
+					<div class="modal-body">
+						<form id="login" action="/register" method="post">
+							<input type="text" id="username" name="username" class="form-control" placeholder="Username"><br>
+							<input type="password" id="pwd" name="pwd" class="form-control" placeholder="Password"><br>
+                            <label>Permissions:</label>
+                            <select name="permissions" class="form-control">
+                                <option>user</option>
+                                <option>admin</option>
+                            </select>
+							<button type="submit" class="btn btn-default btn-lg">Sign Up</button>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	   
+        <div class="jumbotron">
+            <div class="container">
+                <h1>Booking</h1>
+            </div>
+        </div>
+        
+        <div class="container">
+            <div class="row">
+                <div id="main">
+                    <div id="contentWrap">
+                        <div class="col-md-4">
+                            <h2 id="intro">Booking</h2>
+                            {% if not(session['username'] and bookingList) %}
+                            <p>Please fill in all fields of the form:</p>
+
+                            <form class="bookingEntry" onsubmit="return estimateBooking(event)" action="/saveBooking" method="POST">
+                                First Name:<br />
+                                <input type="text" name="firstname" placeholder="First Name" class = "form-control"/><br />
+                                Last Name:<br />
+                                <input type="text" name="lastname" placeholder="Last Name" class = "form-control"/><br />
+                                Email:<br />
+                                <input type="email" name="email" placeholder="Email" class = "form-control"/><br />
+                                Telephone No:<br />
+                                <input type="tel" name="tel" placeholder="Telephone No." class = "form-control"/><br />
+                                Arrival Date<br />
+                                <input type="date" name="arrival" class = "form-control"/><br />
+                                Departure Date<br />
+                                <input type="date" name="departure" class = "form-control"/><br />
+                                <input type="submit" class="btn btn-default" value="Check Estimate" /><br />
+                            </form>
+                        </div>
+                        <div class="col-md-4 pull-right">
+                            {% if approvedBookings %}
+                                <h2 id="desc">Availability</h2>
+                                <p>Bookings are not available on listed dates:</p>
+                                <table class="table" id="allBookings">
+                                    <tr>
+                                        <td>Arrival Date</td><td>Departure Date</td>
+                                    </tr>
+                                    {% for val in approvedBookings %}
+                                    <tr id="approvedBooking_{{val['id']}}">
+                                        <td>{{val['arrivalDate']}}</td><td>{{val['departureDate']}}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </table>
+                            {% endif %}
+                            {% else %}
+                            <table id="userBookings">
+                                <tr>
+                                    <td>ID</td><td>Username</td><td>First Name</td><td>Last Name</td><td>Email</td><td>Telephone Number</td><td>Arrival Date</td><td>Departure Date</td><td>Submission Date</td><td>Price</td><td>Status</td><td>Action</td>
+                                </tr>
+                                    {% if isList %}
+                                        {% for val in bookingList %}
+                                        <tr id="booking_{{val['id']}}">
+                                            {% for key, dictValue in val.items() %}
+                                            <td>{{dictValue}}</td>
+                                            {% endfor %}
+                                            <td><button type="button" value="Modify" onclick="modifyBooking({{val['id']}})">Modify</button><button type="button" value="Delete" onclick="deleteBooking({{val['id']}})">Delete</button></td>
+                                        </tr>
+                                        {% endfor %}
+                                    {% else %}
+                                        <tr>
+                                        {% for key, value in bookingList.items() %}
+                                        <td>{{value}}</td>
+                                        {% endfor %}
+                                        </tr>
+                                    {% endif %}
+                            </table>
+                            {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>    
+            </div>
+        </div>
+		<div class="container">
+            <footer class="footer">
+                <div class="container text-center">
+                    <p class="text-muted">Created by Adrian Wesolowski. Last modified on 12/14/2016.</p>
+                </div>
+            </footer>
+        </div>
 		<script src="{{ url_for('static', filename='script.js') }}"></script>
 	<!--	<script src="{{ url_for('static', filename='bookings_widget.js') }}"></script> -->
 	</body>
