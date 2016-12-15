@@ -167,7 +167,7 @@
                                             {% for key, dictValue in val.items() %}
                                             <td>{{dictValue}}</td>
                                             {% endfor %}
-                                            <td><button type="button" value="Modify" onclick="modifyBooking({{val['id']}})">Modify</button><button type="button" value="Delete" onclick="deleteBooking({{val['id']}})">Delete</button></td>
+                                            <td><!--<button type="button" value="Modify" onclick="modifyBooking({{val['id']}})">Modify</button>--><button type="button" value="Delete" onclick="deleteBooking({{val['id']}})">Delete</button></td>
                                         </tr>
                                         {% endfor %}
                                     {% else %}

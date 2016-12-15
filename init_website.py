@@ -57,7 +57,7 @@ def replaceCsvRow(filePath, rowReplacement, fieldnames, delete=False):
 					for field in rowReplacement:
 						aList[index][counter] = rowReplacement[fieldnames[counter]]
 						counter += 1
-					# break out of the loop; IDs are unique
+				# break out of the loop; IDs are unique
 				break
 	writeCsvFile(aList, filePath)
 	return
@@ -170,17 +170,17 @@ def saveComment():
 	comment = request.form['comment']
 	rating = request.form['rating']
 	
-	# format result is present in the csv file
-	date = datetime.utcnow().strftime("%d %b %Y %H:%M:%S")
+	# format result is present in the csv file (format can be changed if necessary)
+	submitDate = date.today().strftime("%Y-%m-%d")
 	
 	list = readCsvFile(commentsPath)
 	# set new entry ID to successor to the maximum value
 	id = max(list) + 1
-	newEntry = [id, name, comment, rating, date]
+	newEntry = [id, name, comment, rating, submitDate]
 	list.append(newEntry)
 	writeCsvFile(list, commentsPath)
 	# dump data sent in JSON format
-	return json.dumps({'status': 'OK', 'id': id, 'author': name, 'comment': comment, 'rating': rating, 'date': date})
+	return json.dumps({'status': 'OK', 'id': id, 'author': name, 'comment': comment, 'rating': rating, 'date': submitDate})
 
 @app.route('/fetchComments', methods=['GET'])
 def fetchComments():
@@ -292,7 +292,7 @@ def saveBooking():
         name = session['username']
     else:
         name = "Anonymous"
-    submitDate = datetime.utcnow().strftime("%d %b %Y %H:%M:%S")
+    submitDate = date.today()
     # retrieve fields and wrap them into a list
     arrival = request.form['arrival']
     departure = request.form['departure']
@@ -300,6 +300,9 @@ def saveBooking():
     str1 = departure.split('-')
     arr = date(int(str0[0]), int(str0[1]), int(str0[2]))
     dep = date(int(str1[0]), int(str1[1]), int(str1[2]))
+    if (arr - submitDate).days <= 0:
+		# 412 Precondition Failed (arrival date must be later than today)
+        abort(412)
     diff = dep - arr
     for row in bookingsList:
         if row[10] == '1':					# 10th index = status field, the last one
